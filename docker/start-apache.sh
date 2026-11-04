@@ -9,15 +9,12 @@ sed -i "s/<VirtualHost \*:80>/<VirtualHost *:${PORT}>/" /etc/apache2/sites-enabl
 
 # Apache workers often do not inherit container env vars. Pass them explicitly
 # and also write a PHP array outside the web root for connection.php.
-printf '%s\n' \
-    'PassEnv DB_HOST' \
-    'PassEnv DB_PORT' \
-    'PassEnv DB_NAME' \
-    'PassEnv DB_USER' \
-    'PassEnv DB_PASSWORD' \
-    'PassEnv DB_SSL' \
-    'PassEnv DB_SSL_CA' \
-    > /etc/apache2/conf-available/edoc-passenv.conf
+: > /etc/apache2/conf-available/edoc-passenv.conf
+for env_name in DB_HOST DB_PORT DB_NAME DB_USER DB_PASSWORD DB_SSL DB_SSL_CA; do
+    if [ -n "${!env_name:-}" ]; then
+        printf 'PassEnv %s\n' "$env_name" >> /etc/apache2/conf-available/edoc-passenv.conf
+    fi
+done
 a2enconf edoc-passenv >/dev/null
 
 php -r '
@@ -42,6 +39,17 @@ fi
 ca_path="/usr/local/etc/edoc-ca.pem"
 if [ -n "${DB_SSL_CA:-}" ]; then
     printf '%s\n' "$DB_SSL_CA" > "$ca_path"
+elif [ -n "${DB_HOST:-}" ] && [ -n "${DB_PORT:-}" ] && [ "${DB_HOST}" != "localhost" ]; then
+    echo | openssl s_client -starttls mysql -connect "${DB_HOST}:${DB_PORT}" -showcerts 2>/dev/null \
+        | awk 'BEGIN {c=0} /BEGIN CERTIFICATE/{c++} {if(c>0) print} /END CERTIFICATE/{print ""}' \
+        > "${ca_path}.chain" || true
+    if [ -s "${ca_path}.chain" ]; then
+        mv "${ca_path}.chain" "$ca_path"
+    else
+        rm -f "${ca_path}.chain"
+    fi
+fi
+if [ -f "$ca_path" ]; then
     chmod 0640 "$ca_path"
     if id www-data >/dev/null 2>&1; then
         chown root:www-data "$ca_path"

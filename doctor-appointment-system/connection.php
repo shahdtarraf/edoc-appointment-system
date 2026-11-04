@@ -76,15 +76,10 @@ try {
             $database = null;
         } else {
             mysqli_options($database, MYSQLI_OPT_CONNECT_TIMEOUT, 15);
-            if (defined('MYSQLI_OPT_SSL_VERIFY_SERVER_CERT')) {
-                mysqli_options($database, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
-            }
             if ($caFile !== '') {
                 $database->ssl_set(null, null, $caFile, null, null);
-            }
-            $flags = MYSQLI_CLIENT_SSL;
-            if (defined('MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT')) {
-                $flags = $flags | MYSQLI_CLIENT_SSL_DONT_VERIFY_SERVER_CERT;
+            } else {
+                $database->ssl_set(null, null, null, null, null);
             }
             $connected = @$database->real_connect(
                 $servername,
@@ -93,7 +88,7 @@ try {
                 $dbname,
                 $port,
                 null,
-                $flags
+                MYSQLI_CLIENT_SSL
             );
             if ($connected !== true) {
                 $errorText = isset($database->connect_error) ? $database->connect_error : 'unknown';

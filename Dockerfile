@@ -1,6 +1,9 @@
 FROM php:8.2-apache
 
-RUN docker-php-ext-install mysqli pdo_mysql \
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends openssl \
+    && rm -rf /var/lib/apt/lists/* \
+    && docker-php-ext-install mysqli pdo_mysql \
     && mkdir -p /var/lib/php/sessions \
     && chown -R www-data:www-data /var/lib/php/sessions \
     && printf '%s\n' \

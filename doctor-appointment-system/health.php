@@ -21,6 +21,13 @@ if (isset($database) && $database instanceof mysqli && empty($database->connect_
     }
 }
 
+$status['ssl'] = !empty($useSsl);
+$status['host_configured'] = (isset($servername) && $servername !== '' && strcasecmp($servername, 'localhost') !== 0 && $servername !== '127.0.0.1');
+$status['port'] = isset($port) ? $port : 0;
+if (isset($database) && $database instanceof mysqli && !empty($database->connect_errno)) {
+    $status['mysql_errno'] = (int) $database->connect_errno;
+}
+
 if (!$status['database']) {
     $status['ok'] = false;
     http_response_code(503);
