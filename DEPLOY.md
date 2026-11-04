@@ -76,6 +76,7 @@ Do not commit additional dumps that contain real patient records.
 | `DB_NAME` | `SQL_Database_edoc` | Keep the original name |
 | `DB_USER` | app user | Not committed to Git |
 | `DB_PASSWORD` | secret | Render dashboard only |
+| `DB_SSL` | `true` | Required for Aiven. Auto-enabled when `DB_HOST` is not localhost |
 
 6. Health check path: `/health.php`
 7. After deploy, open `/` and `/health.php`.
@@ -104,7 +105,7 @@ Then import the SQL dump once into the `db` service. The web app is at `http://l
 |---|---|
 | Deploy crash / port error | App must listen on `0.0.0.0` and `$PORT` |
 | Homepage 404 | Docker context must be the repository root |
-| `Database connection failed.` | `DB_HOST`, user, password, firewall/SSL, database name |
+| `Database connection failed.` | `DB_HOST`, port (Aiven is not always 3306), user, password, `DB_NAME=SQL_Database_edoc`, SSL |
 | Health check 503 | MySQL not imported or not reachable |
 | Login fails after import | User exists in both `webuser` and the role table |
 | Lost sessions | Render free instances sleep; PHP sessions are local to the instance |

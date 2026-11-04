@@ -7,6 +7,10 @@ RUN docker-php-ext-install mysqli pdo_mysql \
         'session.save_path = "/var/lib/php/sessions"' \
         'session.cookie_httponly = 1' \
         'session.cookie_samesite = Lax' \
+        'session.cookie_secure = 1' \
+        'output_buffering = 4096' \
+        'display_errors = Off' \
+        'log_errors = On' \
         'expose_php = Off' \
         > /usr/local/etc/php/conf.d/edoc.ini \
     && a2enmod rewrite headers \

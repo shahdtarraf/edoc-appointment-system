@@ -25,10 +25,41 @@ if ($dbname === false || $dbname === '') {
     $dbname = 'SQL_Database_edoc';
 }
 
+$sslValue = getenv('DB_SSL');
+if ($sslValue === false || $sslValue === '') {
+    $localHost = (strcasecmp($servername, 'localhost') === 0 || $servername === '127.0.0.1');
+    $useSsl = !$localHost;
+} else {
+    $sslNormalized = strtolower(trim($sslValue));
+    $useSsl = in_array($sslNormalized, array('1', 'true', 'yes', 'on', 'required'), true);
+}
+
 mysqli_report(MYSQLI_REPORT_OFF);
 
 try {
-    $database = @new mysqli($servername, $username, $password, $dbname, $port);
+    if ($useSsl) {
+        $database = mysqli_init();
+        if ($database === false) {
+            $database = null;
+        } else {
+            mysqli_options($database, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, false);
+            $database->ssl_set(null, null, null, null, null);
+            $connected = @$database->real_connect(
+                $servername,
+                $username,
+                $password,
+                $dbname,
+                $port,
+                null,
+                MYSQLI_CLIENT_SSL
+            );
+            if ($connected !== true) {
+                error_log('Database connection failed');
+            }
+        }
+    } else {
+        $database = @new mysqli($servername, $username, $password, $dbname, $port);
+    }
 } catch (mysqli_sql_exception $exception) {
     error_log('Database connection failed');
     $database = null;
