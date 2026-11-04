@@ -1,0 +1,15 @@
+.local-runtime/
+.env
+.env.local
+.env.production
+*.log
+*.zip
+*.rar
+*.wmv
+*.pptx
+*.docx
+Thumbs.db
+.DS_Store
+vendor/
+.idea/
+.vscode/

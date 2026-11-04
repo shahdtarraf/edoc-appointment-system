@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: edoc-web
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /health.php
+    envVars:
+      - key: PORT
+        value: "10000"
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_NAME
+        value: SQL_Database_edoc
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+
+# MySQL is not created here on purpose.
+# A Render Private Service plus persistent disk is a paid resource.
+# Configure the database separately after review. See DEPLOY.md.
