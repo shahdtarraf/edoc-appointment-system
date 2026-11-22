@@ -1,4 +1,7 @@
 .local-runtime/
+services/specialty-recommend/.venv/
+services/**/__pycache__/
+services/**/*.pyc
 .env
 .env.local
 .env.production
@@ -13,3 +16,30 @@ Thumbs.db
 vendor/
 .idea/
 .vscode/
+
+# AI workspace (details in ai/.gitignore)
+kaggle.json
+**/kaggle.json
+ai/datasets/raw/*
+!ai/datasets/raw/.gitkeep
+ai/datasets/interim/*
+!ai/datasets/interim/.gitkeep
+ai/datasets/processed/*
+!ai/datasets/processed/.gitkeep
+ai/models/experimental/*
+!ai/models/experimental/.gitkeep
+ai/models/approved/*
+!ai/models/approved/.gitkeep
+ai/models/checkpoints/*
+!ai/models/checkpoints/.gitkeep
+ai/**/__pycache__/
+ai/.ipynb_checkpoints/
+ai/**/.ipynb_checkpoints/
+ai/runs/
+
+# Full on-disk snapshot of ai/ (may include AHD binaries). Keep locally; do not push.
+ai_previous_backup/
+
+# Colab training workspace (raw/processed data and extra joblib copies). Inference copies live in services/specialty-recommend/artifacts/
+AI/
+*.pdf

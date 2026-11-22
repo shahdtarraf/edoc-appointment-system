@@ -1,0 +1,135 @@
+{
+  "run_id": "stage06_model_training_20261122T152408Z",
+  "mapping_approval_scope": "EXPERIMENTAL_RESEARCH_ONLY",
+  "production_approved": false,
+  "clinical_approved": false,
+  "data_source_stage05_run_dir": "/content/drive/MyDrive/eDoc_AI/01_specialty_recommendation/runs/stage05_mode_b_experimental_20261122T142537Z",
+  "source_sha256": {
+    "train": "51ebb5664d95cbe5a8dbe9d0ff552209dff4e2bc2e053a515d152b616bb75c3d",
+    "val": "7fb7ea2e5f9a0ba646f5abaab7441aa61de3b64a2071ee85818cf575250c9e00",
+    "test": "46db1589e7f17fbc41b8c322247f972110d5253b0d022c66725122cb27edf636"
+  },
+  "trained_specialties_count": 30,
+  "trained_specialties": {
+    "2": "Allergology",
+    "3": "Anaesthetics",
+    "5": "Cardiology",
+    "11": "Dental, oral and maxillo-facial surgery",
+    "13": "Dermatology",
+    "14": "Endocrinology",
+    "16": "Gastroenterology",
+    "17": "General hematology",
+    "19": "General surgery",
+    "20": "Geriatrics",
+    "21": "Immunology",
+    "22": "Infectious diseases",
+    "29": "Neurology",
+    "30": "Neurosurgery",
+    "32": "Obstetrics and gynecology",
+    "34": "Ophthalmology",
+    "35": "Orthopaedics",
+    "36": "Otorhinolaryngology",
+    "37": "Paediatric surgery",
+    "38": "Paediatrics",
+    "40": "Pharmacology",
+    "42": "Plastic surgery",
+    "45": "Psychiatry",
+    "46": "Public health and Preventive Medicine",
+    "47": "Radiology",
+    "49": "Respiratory medicine",
+    "50": "Rheumatology",
+    "54": "Urology",
+    "55": "Vascular surgery",
+    "56": "Venereology"
+  },
+  "text_feature_column": "question_tfidf_conservative",
+  "vectorizer_config": {
+    "word": {
+      "analyzer": "word",
+      "ngram_range": [
+        1,
+        2
+      ],
+      "min_df": 3,
+      "max_features": 80000,
+      "sublinear_tf": true,
+      "dtype": "float32"
+    },
+    "char": {
+      "analyzer": "char_wb",
+      "ngram_range": [
+        3,
+        5
+      ],
+      "min_df": 5,
+      "max_features": 60000,
+      "sublinear_tf": true,
+      "dtype": "float32"
+    }
+  },
+  "selected_model_name": "model_b_balanced_linear_svc",
+  "classifier_config": {
+    "C": 1.0,
+    "class_weight": "balanced",
+    "dual": true,
+    "tol": 0.001,
+    "max_iter": 1000,
+    "random_state": 42
+  },
+  "validation_metrics": {
+    "split": "validation",
+    "accuracy": 0.82553,
+    "balanced_accuracy": 0.45452,
+    "macro_precision": 0.44995,
+    "macro_recall": 0.45452,
+    "macro_f1": 0.44972,
+    "weighted_precision": 0.82874,
+    "weighted_recall": 0.82553,
+    "weighted_f1": 0.82666,
+    "top3_accuracy_ranking_only": 0.9418,
+    "top5_accuracy_ranking_only": 0.9629,
+    "fit_seconds": 193.01,
+    "predict_seconds": 0.32,
+    "score_disclaimer": "decision_function outputs are uncalibrated ranking margins, NOT probabilities; Top-3 is NOT clinical routing accuracy."
+  },
+  "independent_test_metrics": {
+    "split": "independent_held_out_test",
+    "accuracy": 0.82607,
+    "balanced_accuracy": 0.46768,
+    "macro_precision": 0.48026,
+    "macro_recall": 0.46768,
+    "macro_f1": 0.46782,
+    "weighted_precision": 0.82959,
+    "weighted_recall": 0.82607,
+    "weighted_f1": 0.82735,
+    "top3_accuracy_ranking_only": 0.94488,
+    "top5_accuracy_ranking_only": 0.96491,
+    "fit_seconds": 228.04,
+    "predict_seconds": 0.33,
+    "score_disclaimer": "decision_function outputs are uncalibrated ranking margins, NOT probabilities; Top-3 is NOT clinical routing accuracy.",
+    "selected_model": "model_b_balanced_linear_svc",
+    "n_trainval": 495834,
+    "n_test": 55114,
+    "n_classes": 30
+  },
+  "abstention_policy": {
+    "abstain_if_margin_lt": 0.2405,
+    "abstain_if_top1_lt": -0.2586,
+    "expected_abstention_rate_val": 0.1412,
+    "manual_selection_always_available": true,
+    "clinical_disclaimer": "Experimental engineering threshold derived from Validation ONLY; NOT clinically approved and NOT a medical diagnosis."
+  },
+  "limitations": [
+    "Trained on EXPERIMENTAL_RESEARCH_ONLY mapping (NOT medically approved).",
+    "Covers 30/56 eDoc specialties; cannot predict the 26 uncovered specialties.",
+    "Decision scores are uncalibrated LinearSVC margins, NOT clinical probabilities.",
+    "System is an optional specialty suggestion helper only, NOT a diagnosis tool."
+  ],
+  "library_versions": {
+    "python": "3.13.16",
+    "pandas": "2.2.3",
+    "numpy": "2.4.6",
+    "scikit_learn": "1.6.1",
+    "joblib": "1.6.0"
+  }
+}

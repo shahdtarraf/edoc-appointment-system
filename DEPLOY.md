@@ -77,6 +77,10 @@ Do not commit additional dumps that contain real patient records.
 | `DB_USER` | app user | Not committed to Git |
 | `DB_PASSWORD` | secret | Render dashboard only |
 | `DB_SSL` | `true` | Required for Aiven. Auto-enabled when `DB_HOST` is not localhost |
+| `AI_SERVICE_URL` | `https://edoc-specialty-recommend.onrender.com` | Public URL of the FastAPI service, no trailing slash. Leave unset to keep booking without AI |
+| `AI_SERVICE_TIMEOUT` | `6` | Seconds. Booking still works if the helper times out |
+| `AI_SERVICE_TOKEN` | generate in the dashboard | Same value on `edoc-web` and `edoc-specialty-recommend`. Never commit it |
+| `SESSION_COOKIE_SECURE` | `1` | Keep `1` on Render HTTPS. Local Docker HTTP uses `0` |
 
 6. Health check path: `/health.php`
 7. After deploy, open `/` and `/health.php`.
@@ -88,6 +92,19 @@ Expected health response:
 ```
 
 `{"ok":false,"database":false}` means PHP is up but MySQL is not reachable. The response never includes credentials.
+
+## Specialty recommendation service (optional)
+
+Second Render Docker web service from `services/specialty-recommend/Dockerfile` (context: that folder). Health check: `/health`. CPU only. Do not upload training parquet/xlsx.
+
+After that service is live, set `AI_SERVICE_URL` on `edoc-web` to its public origin with no trailing slash, and set the **same** `AI_SERVICE_TOKEN` on both services in the Render dashboard. `/recommend` rejects requests without that token. `/health` stays public for liveness only. Patient booking does not depend on this service.
+
+Local FastAPI:
+
+```
+set AI_SERVICE_TOKEN=local-dev-token
+uvicorn app.main:app --host 0.0.0.0 --port 8081
+```
 
 ## Local Docker (optional)
 

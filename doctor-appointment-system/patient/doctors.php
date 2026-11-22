@@ -28,21 +28,38 @@
     if(isset($_SESSION["user"])){
         if(($_SESSION["user"])=="" or $_SESSION['usertype']!='p'){
             header("location: ../login.php");
+            exit;
         }else{
             $useremail=$_SESSION["user"];
         }
 
     }else{
         header("location: ../login.php");
+        exit;
     }
     
 
     //import database
     include("../connection.php");
-    $userrow = $database->query("select * from patient where pemail='$useremail'");
-    $userfetch=$userrow->fetch_assoc();
+    include __DIR__ . "/../config/supported_specialties.php";
+    $sqlpat = "select * from patient where pemail=?";
+    $stmtpat = $database->prepare($sqlpat);
+    $stmtpat->bind_param("s", $useremail);
+    $stmtpat->execute();
+    $userfetch=$stmtpat->get_result()->fetch_assoc();
     $userid= $userfetch["pid"];
     $username=$userfetch["pname"];
+
+    $filterSpec = 0;
+    $filterSpecName = "";
+    if (isset($_GET["spec"]) && $_GET["spec"] !== "") {
+        $candidateSpec = (int) $_GET["spec"];
+        if (edoc_is_supported_specialty($candidateSpec)) {
+            $filterSpec = $candidateSpec;
+            $names = edoc_supported_specialty_map();
+            $filterSpecName = $names[$filterSpec];
+        }
+    }
 
     ?>
     <div class="container">
@@ -77,6 +94,11 @@
                 <tr class="menu-row">
                     <td class="menu-btn menu-icon-doctor menu-active menu-icon-doctor-active">
                         <a href="doctors.php" class="non-style-link-menu non-style-link-menu-active"><div><p class="menu-text">All Doctors</p></a></div>
+                    </td>
+                </tr>
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-session">
+                        <a href="specialty-assist.php" class="non-style-link-menu"><div><p class="menu-text">Specialty help</p></div></a>
                     </td>
                 </tr>
                 
@@ -155,17 +177,33 @@
                 <tr>
                     <td colspan="4" style="padding-top:10px;">
                         <p class="heading-main12" style="margin-left: 45px;font-size:18px;color:rgb(49, 49, 49)">All Doctors (<?php echo $list11->num_rows; ?>)</p>
+                        <p style="margin-left:45px;font-size:14px;color:#555;">
+                            <a href="specialty-assist.php">ساعدني في اختيار التخصص المناسب</a>
+                            &nbsp;|&nbsp;
+                            <a href="doctors.php">عرض كل الأطباء</a>
+                        </p>
+                        <?php if ($filterSpec > 0) { ?>
+                        <p style="margin-left:45px;font-size:14px;color:#333;">
+                            Filtered specialty: <?php echo htmlspecialchars($filterSpecName, ENT_QUOTES, 'UTF-8'); ?>
+                        </p>
+                        <?php } ?>
                     </td>
                     
                 </tr>
                 <?php
                     if($_POST){
                         $keyword=$_POST["search"];
-                        
                         $sqlmain= "select * from doctor where docemail='$keyword' or docname='$keyword' or docname like '$keyword%' or docname like '%$keyword' or docname like '%$keyword%'";
                     }else{
                         $sqlmain= "select * from doctor order by docid desc";
-
+                    }
+                    if ($filterSpec > 0) {
+                        $stmtDocs = $database->prepare("select * from doctor where specialties=? order by docid desc");
+                        $stmtDocs->bind_param("i", $filterSpec);
+                        $stmtDocs->execute();
+                        $result = $stmtDocs->get_result();
+                    } else {
+                        $result = $database->query($sqlmain);
                     }
 
 
@@ -203,10 +241,10 @@
                         
                             <?php
 
-                                
-                                $result= $database->query($sqlmain);
-
                                 if($result->num_rows==0){
+                                    $emptyMsg = $filterSpec > 0
+                                        ? 'No doctors are currently listed for this specialty. You can browse all doctors or choose another specialty.'
+                                        : 'We  couldnt find anything related to your keywords !';
                                     echo '<tr>
                                     <td colspan="4">
                                     <br><br><br><br>
@@ -214,7 +252,7 @@
                                     <img src="../img/notfound.svg" width="25%">
                                     
                                     <br>
-                                    <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">We  couldnt find anything related to your keywords !</p>
+                                    <p class="heading-main12" style="margin-left: 45px;font-size:20px;color:rgb(49, 49, 49)">' . htmlspecialchars($emptyMsg, ENT_QUOTES, 'UTF-8') . '</p>
                                     <a class="non-style-link" href="doctors.php"><button  class="login-btn btn-primary-soft btn"  style="display: flex;justify-content: center;align-items: center;margin-left:20px;">&nbsp; Show all Doctors &nbsp;</font></button>
                                     </a>
                                     </center>
@@ -273,9 +311,9 @@
         </div>
     </div>
     <?php 
-    if($_GET){
+    if(isset($_GET["action"])){
         
-        $id=$_GET["id"];
+        $id= isset($_GET["id"]) ? $_GET["id"] : 0;
         $action=$_GET["action"];
         if($action=='drop'){
             $nameget=$_GET["name"];
@@ -434,7 +472,6 @@
             </div>
             </div>
             ';
-        }
         }elseif($action=='edit'){
             $sqlmain= "select * from doctor where docid=?";
             $stmt = $database->prepare($sqlmain);
@@ -625,8 +662,9 @@
 
 
 
-        }; 
-    };
+        }
+        }
+    }
 
 ?>
 </div>

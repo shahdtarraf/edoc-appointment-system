@@ -1,0 +1,58 @@
+{
+  "note": "Validation thresholds are copied from stage06 abstention_analysis.json. Extra input guards were NOT tuned on Test. They exist because Validation margins alone did not abstain on the synthetic phrase تعب عام (Pharmacology, margin 1.1978).",
+  "derived_from": "validation_split_only",
+  "score_type": "LinearSVC uncalibrated decision_function margins (NOT probabilities)",
+  "validation_thresholds": {
+    "abstain_if_margin_lt": 0.2405,
+    "abstain_if_top1_lt": -0.2586
+  },
+  "input_guards": {
+    "max_input_chars": 1500,
+    "min_tokens": 2,
+    "min_arabic_letters": 3,
+    "generic_phrases_after_preprocess": [
+      "تعب عام",
+      "تعب",
+      "تعبان",
+      "تعب شديد",
+      "اشعر بتعب",
+      "احس بتعب",
+      "احساس بالتعب",
+      "الم",
+      "الم عام",
+      "وجع",
+      "وجع عام",
+      "الم غير محدد",
+      "اعراض عامة",
+      "مرض",
+      "مو زين",
+      "مو تمام",
+      "ما اعرف",
+      "لا اعرف",
+      "لا ادري",
+      "مش عارف",
+      "مش فاهم",
+      "غير مفهوم",
+      "help",
+      "i feel sick",
+      "tired",
+      "fatigue",
+      "pain"
+    ],
+    "multi_system_min_distinct": 3,
+    "body_system_keywords": {
+      "dental": ["ضرس", "اسنان", "سن", "لثة", "لثه", "لثه"],
+      "eye": ["عين", "عيون", "رؤية", "بصر", "نظر"],
+      "heart": ["قلب", "خفقان", "ذبحة"],
+      "skin": ["جلد", "طفح", "حكة", "اكزيما"],
+      "neuro": ["صداع", "شلل", "تشنج", "نزيف دماغ"],
+      "gi": ["معدة", "بطن", "اسهال", "امساك", "قيء"],
+      "resp": ["سعال", "ربو", "ضيق تنفس", "رئة"],
+      "uro": ["بول", "كلية", "كلى", "مسالك"],
+      "psych": ["اكتئاب", "قلق", "هلوسة"],
+      "obgyn": ["حمل", "دورة شهرية", "رحم"]
+    }
+  },
+  "user_message_abstain": "لم نتمكن من تحديد التخصص المناسب من وصفك. يمكنك اختيار التخصص يدوياً أو مراجعة الطبيب لتوجيهك.",
+  "disclaimer": "Experimental research helper for 30 eDoc specialties only. Not a diagnosis, treatment, or clinically approved routing tool. Decision scores are uncalibrated ranking margins, not probabilities."
+}

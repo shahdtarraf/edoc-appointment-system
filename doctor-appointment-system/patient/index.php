@@ -93,6 +93,11 @@
                         <a href="doctors.php" class="non-style-link-menu"><div><p class="menu-text">All Doctors</p></a></div>
                     </td>
                 </tr>
+                <tr class="menu-row">
+                    <td class="menu-btn menu-icon-session">
+                        <a href="specialty-assist.php" class="non-style-link-menu"><div><p class="menu-text">Specialty help</p></div></a>
+                    </td>
+                </tr>
                 
                 <tr class="menu-row" >
                     <td class="menu-btn menu-icon-session">
@@ -163,6 +168,7 @@
                             <p>Haven't any idea about doctors? no problem let's jumping to 
                                 <a href="doctors.php" class="non-style-link"><b>"All Doctors"</b></a> section or 
                                 <a href="schedule.php" class="non-style-link"><b>"Sessions"</b> </a><br>
+                                Optional: <a href="specialty-assist.php" class="non-style-link"><b>ساعدني في اختيار التخصص المناسب</b></a> (experimental helper, not a diagnosis).<br>
                                 Track your past and future appointments history.<br>Also find out the expected arrival time of your doctor or medical consultant.<br><br>
                             </p>
                             

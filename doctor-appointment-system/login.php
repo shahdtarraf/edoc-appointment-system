@@ -1,3 +1,129 @@
+<?php
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    if (!@session_start()) {
+        error_log('Unable to start session');
+        http_response_code(500);
+        exit('Unable to start session.');
+    }
+}
+
+$_SESSION["user"] = "";
+$_SESSION["usertype"] = "";
+
+date_default_timezone_set('Asia/Kolkata');
+$date = date('Y-m-d');
+$_SESSION["date"] = $date;
+
+include("connection.php");
+
+function edoc_login_success($email, $usertype, $location)
+{
+    if (!session_regenerate_id(true)) {
+        error_log('session_regenerate_id failed');
+        return false;
+    }
+    $_SESSION['user'] = $email;
+    $_SESSION['usertype'] = $usertype;
+    header('location: ' . $location);
+    exit;
+}
+
+if ($_POST) {
+    $email = isset($_POST['useremail']) ? trim((string) $_POST['useremail']) : '';
+    $password = isset($_POST['userpassword']) ? (string) $_POST['userpassword'] : '';
+
+    $error = '<label for="promter" class="form-label"></label>';
+    $genericError = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
+
+    if ($email === '' || $password === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 255) {
+        $error = $genericError;
+    } elseif (!isset($database) || !($database instanceof mysqli) || $database->connect_error) {
+        error_log('Login aborted: database unavailable');
+        $error = $genericError;
+    } else {
+        $stmt = $database->prepare('SELECT email, usertype FROM webuser WHERE email = ? LIMIT 1');
+        if ($stmt === false) {
+            error_log('Login prepare failed');
+            $error = $genericError;
+        } else {
+            $stmt->bind_param('s', $email);
+            if (!$stmt->execute()) {
+                error_log('Login execute failed');
+                $error = $genericError;
+                $stmt->close();
+            } else {
+                $result = $stmt->get_result();
+                $stmt->close();
+                if ($result === false || $result->num_rows !== 1) {
+                    $error = $genericError;
+                } else {
+                    $utype = $result->fetch_assoc()['usertype'];
+
+                    if ($utype == 'p') {
+                        $checkerStmt = $database->prepare('SELECT pemail FROM patient WHERE pemail = ? AND ppassword = ? LIMIT 1');
+                        if ($checkerStmt === false) {
+                            error_log('Login patient prepare failed');
+                            $error = $genericError;
+                        } else {
+                            $checkerStmt->bind_param('ss', $email, $password);
+                            $loginOk = false;
+                            if ($checkerStmt->execute()) {
+                                $checker = $checkerStmt->get_result();
+                                $loginOk = ($checker && $checker->num_rows == 1);
+                            }
+                            $checkerStmt->close();
+                            if ($loginOk && edoc_login_success($email, 'p', 'patient/index.php')) {
+                                // redirected
+                            }
+                            $error = $genericError;
+                        }
+                    } elseif ($utype == 'a') {
+                        $checkerStmt = $database->prepare('SELECT aemail FROM admin WHERE aemail = ? AND apassword = ? LIMIT 1');
+                        if ($checkerStmt === false) {
+                            error_log('Login admin prepare failed');
+                            $error = $genericError;
+                        } else {
+                            $checkerStmt->bind_param('ss', $email, $password);
+                            $loginOk = false;
+                            if ($checkerStmt->execute()) {
+                                $checker = $checkerStmt->get_result();
+                                $loginOk = ($checker && $checker->num_rows == 1);
+                            }
+                            $checkerStmt->close();
+                            if ($loginOk && edoc_login_success($email, 'a', 'admin/index.php')) {
+                                // redirected
+                            }
+                            $error = $genericError;
+                        }
+                    } elseif ($utype == 'd') {
+                        $checkerStmt = $database->prepare('SELECT docemail FROM doctor WHERE docemail = ? AND docpassword = ? LIMIT 1');
+                        if ($checkerStmt === false) {
+                            error_log('Login doctor prepare failed');
+                            $error = $genericError;
+                        } else {
+                            $checkerStmt->bind_param('ss', $email, $password);
+                            $loginOk = false;
+                            if ($checkerStmt->execute()) {
+                                $checker = $checkerStmt->get_result();
+                                $loginOk = ($checker && $checker->num_rows == 1);
+                            }
+                            $checkerStmt->close();
+                            if ($loginOk && edoc_login_success($email, 'd', 'doctor/index.php')) {
+                                // redirected
+                            }
+                            $error = $genericError;
+                        }
+                    } else {
+                        $error = $genericError;
+                    }
+                }
+            }
+        }
+    }
+} else {
+    $error = '<label for="promter" class="form-label">&nbsp;</label>';
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,110 +140,6 @@
     
 </head>
 <body>
-    <?php
-
-    //learn from w3schools.com
-    //Unset all the server side variables
-
-    session_start();
-
-    $_SESSION["user"]="";
-    $_SESSION["usertype"]="";
-    
-    // Set the new timezone
-    date_default_timezone_set('Asia/Kolkata');
-    $date = date('Y-m-d');
-
-    $_SESSION["date"]=$date;
-    
-
-    //import database
-    include("connection.php");
-
-    
-
-
-
-    if($_POST){
-
-        $email=$_POST['useremail'];
-        $password=$_POST['userpassword'];
-        
-        $error='<label for="promter" class="form-label"></label>';
-
-        $result= $database->query("select * from webuser where email='$email'");
-        if($result->num_rows==1){
-            $utype=$result->fetch_assoc()['usertype'];
-            if ($utype=='p'){
-                //TODO
-                $checker = $database->query("select * from patient where pemail='$email' and ppassword='$password'");
-                if ($checker->num_rows==1){
-
-
-                    //   Patient dashbord
-                    $_SESSION['user']=$email;
-                    $_SESSION['usertype']='p';
-                    
-                    header('location: patient/index.php');
-
-                }else{
-                    $error='<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
-                }
-
-            }elseif($utype=='a'){
-                //TODO
-                $checker = $database->query("select * from admin where aemail='$email' and apassword='$password'");
-                if ($checker->num_rows==1){
-
-
-                    //   Admin dashbord
-                    $_SESSION['user']=$email;
-                    $_SESSION['usertype']='a';
-                    
-                    header('location: admin/index.php');
-
-                }else{
-                    $error='<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
-                }
-
-
-            }elseif($utype=='d'){
-                //TODO
-                $checker = $database->query("select * from doctor where docemail='$email' and docpassword='$password'");
-                if ($checker->num_rows==1){
-
-
-                    //   doctor dashbord
-                    $_SESSION['user']=$email;
-                    $_SESSION['usertype']='d';
-                    header('location: doctor/index.php');
-
-                }else{
-                    $error='<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
-                }
-
-            }
-            
-        }else{
-            $error='<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">We cant found any acount for this email.</label>';
-        }
-
-
-
-
-
-
-        
-    }else{
-        $error='<label for="promter" class="form-label">&nbsp;</label>';
-    }
-
-    ?>
-
-
-
-
-
     <center>
     <div class="container">
         <table border="0" style="margin: 0;padding: 0;width: 60%;">

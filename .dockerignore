@@ -11,6 +11,7 @@ render.yaml
 DEPLOY.md
 README.md
 **/*.sql
+doctor-appointment-system/tests/
 doctor-appointment-system/Dockerfile
 doctor-appointment-system/docker-compose.yml
 doctor-appointment-system/LICENSE

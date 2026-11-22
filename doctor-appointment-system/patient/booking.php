@@ -24,16 +24,19 @@
     //learn from w3schools.com
 
     session_start();
+    include __DIR__ . '/../csrf.php';
 
     if(isset($_SESSION["user"])){
         if(($_SESSION["user"])=="" or $_SESSION['usertype']!='p'){
             header("location: ../login.php");
+            exit;
         }else{
             $useremail=$_SESSION["user"];
         }
 
     }else{
         header("location: ../login.php");
+        exit;
     }
     
 
@@ -222,15 +225,30 @@
                                     $docemail=$row["docemail"];
                                     $scheduledate=$row["scheduledate"];
                                     $scheduletime=$row["scheduletime"];
-                                    $sql2="select * from appointment where scheduleid=$id";
-                                    //echo $sql2;
-                                     $result12= $database->query($sql2);
-                                     $apponum=($result12->num_rows)+1;
+                                    $scheduleid=(int)$scheduleid;
+                                    $apponum=1;
+                                    $maxStmt=$database->prepare('SELECT COALESCE(MAX(apponum), 0) + 1 AS next_apponum FROM appointment WHERE scheduleid = ?');
+                                    if($maxStmt!==false){
+                                        $maxStmt->bind_param('i',$scheduleid);
+                                        if($maxStmt->execute()){
+                                            $maxResult=$maxStmt->get_result();
+                                            if($maxResult){
+                                                $maxRow=$maxResult->fetch_assoc();
+                                                if($maxRow){
+                                                    $apponum=(int)$maxRow['next_apponum'];
+                                                    if($apponum<1){
+                                                        $apponum=1;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        $maxStmt->close();
+                                    }
                                     
                                     echo '
                                         <form action="booking-complete.php" method="post">
+                                            '.edoc_csrf_field().'
                                             <input type="hidden" name="scheduleid" value="'.$scheduleid.'" >
-                                            <input type="hidden" name="apponum" value="'.$apponum.'" >
                                             <input type="hidden" name="date" value="'.$today.'" >
 
                                         
@@ -278,6 +296,7 @@
                                                         </div>
                                                         <center>
                                                         <div class=" dashboard-icons" style="margin-left: 0px;width:90%;font-size:70px;font-weight:800;text-align:center;color:var(--btnnictext);background-color: var(--btnice)">'.$apponum.'</div>
+                                                        <div class="h3-search" style="font-size:12px;line-height:18px;text-align:center;padding:8px;">Estimated until you confirm. Another booking may take this number first.</div>
                                                     </center>
                                                        
                                                         </div><br>

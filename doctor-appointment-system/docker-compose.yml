@@ -5,6 +5,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       PORT: "8080"
       DB_HOST: db
@@ -12,6 +14,11 @@ services:
       DB_NAME: SQL_Database_edoc
       DB_USER: root
       DB_PASSWORD: ${MYSQL_ROOT_PASSWORD:-localdevpassword}
+      DB_SSL: "false"
+      AI_SERVICE_URL: ${AI_SERVICE_URL:-http://host.docker.internal:8081}
+      AI_SERVICE_TIMEOUT: "6"
+      AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN:-local-dev-token}
+      SESSION_COOKIE_SECURE: "0"
     depends_on:
       - db
 
@@ -23,6 +30,8 @@ services:
       MYSQL_DATABASE: SQL_Database_edoc
     volumes:
       - db_data:/var/lib/mysql
+    ports:
+      - "3307:3306"
     expose:
       - "3306"
 

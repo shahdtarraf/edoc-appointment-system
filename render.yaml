@@ -18,6 +18,26 @@ services:
         sync: false
       - key: DB_PASSWORD
         sync: false
+      - key: AI_SERVICE_URL
+        sync: false
+      - key: AI_SERVICE_TIMEOUT
+        value: "6"
+      - key: AI_SERVICE_TOKEN
+        sync: false
+      - key: SESSION_COOKIE_SECURE
+        value: "1"
+
+  - type: web
+    name: edoc-specialty-recommend
+    runtime: docker
+    dockerfilePath: ./services/specialty-recommend/Dockerfile
+    dockerContext: ./services/specialty-recommend
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: "10000"
+      - key: AI_SERVICE_TOKEN
+        sync: false
 
 # MySQL is not created here on purpose.
 # A Render Private Service plus persistent disk is a paid resource.
