@@ -22,7 +22,7 @@ RUN apt-get update \
         '    Options -Indexes +FollowSymLinks' \
         '    AllowOverride All' \
         '    Require all granted' \
-        '    DirectoryIndex index.html index.php' \
+        '    DirectoryIndex index.php index.html' \
         '</Directory>' \
         > /etc/apache2/conf-available/edoc.conf \
     && a2enconf edoc

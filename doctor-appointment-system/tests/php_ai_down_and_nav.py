@@ -44,10 +44,14 @@ def csrf(html: str) -> str:
 
 def login() -> Browser:
     browser = Browser()
-    browser.get("/login.php")
+    login_html = browser.get("/login.php")
     html = browser.post(
         "/login.php",
-        {"useremail": "patient@edoc.com", "userpassword": "123"},
+        {
+            "useremail": "patient@edoc.com",
+            "userpassword": "123",
+            "csrf_token": csrf(login_html),
+        },
     )
     if "Welcome" not in html and "specialty-assist.php" not in html:
         raise AssertionError("login failed")

@@ -1,0 +1,21 @@
+# Overlay on docker-compose.demo.yml: PHP + F01 + F02, Feature 03 env cleared.
+# Demo database only. Never Aiven.
+#
+# Apply:
+#   docker compose -f docker-compose.demo.yml -f docker-compose.public-ai.overlay.yml up -d demo-web
+#   docker compose -f docker-compose.demo.yml stop edoc-noshow
+# Restore full Demo (F03 included):
+#   docker compose -f docker-compose.demo.yml up -d demo-web edoc-noshow
+
+services:
+  demo-web:
+    environment:
+      NOSHOW_URL: ""
+      NOSHOW_TOKEN: ""
+    depends_on:
+      demo-db:
+        condition: service_healthy
+      edoc-assistant:
+        condition: service_started
+      edoc-specialty:
+        condition: service_started

@@ -78,7 +78,11 @@ def main() -> int:
 
     status, body, url = browser.post(
         "/login.php",
-        {"useremail": PATIENT_EMAIL, "userpassword": PATIENT_PASSWORD},
+        {
+            "useremail": PATIENT_EMAIL,
+            "userpassword": PATIENT_PASSWORD,
+            "csrf_token": csrf_from(login_html),
+        },
     )
     if "patient/index.php" not in url and "Welcome" not in body:
         failures.append(f"login did not reach patient home: status={status} url={url}")

@@ -1,0 +1,44 @@
+{
+  "documents": [
+    {
+      "id": "overview.what.en",
+      "title": "What eDoc Demo is",
+      "source": "index.php",
+      "source_label": "Home",
+      "roles": ["guest", "p", "d", "a"],
+      "lang": "en",
+      "text": "eDoc is an experimental online appointment platform. You can browse specialties, synthetic demo doctors, and simulated sessions. People, clinics, and bookings in this environment are not real medical records and must not be used for actual care.",
+      "questions": ["what is edoc", "is this a real clinic", "what services are available", "how does the platform work", "how do I get started"]
+    },
+    {
+      "id": "overview.demo.en",
+      "title": "What a Demo Appointment means",
+      "source": "index.php / patient/booking.php",
+      "source_label": "Booking",
+      "roles": ["guest", "p", "d", "a"],
+      "lang": "en",
+      "text": "Demo means a sandbox. The badge DEMO – Simulated Appointment marks a practice booking, not a real visit with a licensed clinician. Demo doctors show a Demo Doctor badge. No real license numbers or patient ratings are presented as genuine.",
+      "questions": ["what does demo appointment mean", "is my booking real"]
+    },
+    {
+      "id": "overview.lang.en",
+      "title": "Language",
+      "source": "includes/i18n.php",
+      "source_label": "Language switch",
+      "roles": ["guest", "p", "d", "a"],
+      "lang": "en",
+      "text": "Arabic is the default interface language (RTL). Switch to English from the language link in the header or sidebar.",
+      "questions": ["how do I change language", "english"]
+    },
+    {
+      "id": "overview.roles.en",
+      "title": "User roles",
+      "source": "login.php",
+      "source_label": "Log in",
+      "roles": ["guest", "p", "d", "a"],
+      "lang": "en",
+      "text": "There are three roles: patient (patient/ console), doctor (doctor/ console), and admin (admin/ console). After login you are sent to the matching console.",
+      "questions": ["what roles exist", "patient vs doctor"]
+    }
+  ]
+}

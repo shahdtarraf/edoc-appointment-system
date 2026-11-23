@@ -1,0 +1,48 @@
+{
+  "documents": [
+    {
+      "id": "spec.pick.ar",
+      "title": "كيف أختار تخصصاً",
+      "source": "patient/specialties.php / patient/specialty-assist.php",
+      "source_label": "التخصصات ومساعد التخصص",
+      "roles": ["guest", "p"],
+      "lang": "ar",
+      "text": "للتصفح اليدوي افتح دليل التخصصات (56 اسماً كما في القاعدة). إذا لم تكن متأكداً استخدم صفحة مساعد التخصص وهي توصية أولية من 30 تخصصاً مدعوماً وليست تشخيصاً. عند ارتباط الوصف بأكثر من مجال اختر يدوياً أو أعد صياغة الوصف في تلك الصفحة. هذا المساعد لا يقارن التخصصات لأغراض العلاج.",
+      "questions": ["كيف أختار تخصصاً", "ماذا أفعل عندما لا أكون متأكداً من التخصص", "الفرق بين تخصصين", "أعراض مرتبطة بأكثر من تخصص", "ما الحالات العامة لكل تخصص"],
+      "followups": ["كيف أستخدم مساعد التخصص؟", "ما الفرق بين 56 و30؟"]
+    },
+    {
+      "id": "spec.pick.en",
+      "title": "How to pick a specialty",
+      "source": "patient/specialties.php / patient/specialty-assist.php",
+      "source_label": "Specialties and helper",
+      "roles": ["guest", "p"],
+      "lang": "en",
+      "text": "Browse the directory of 56 specialty names, or use Specialty helper for one experimental suggestion among 30 supported names. That suggestion is not a diagnosis. If several areas could apply, pick manually. This chat does not compare specialties for treatment.",
+      "questions": ["how do I choose a specialty", "not sure which specialty", "difference between two specialties"],
+      "followups": ["How do I use the specialty helper?", "Difference between 56 and 30?"]
+    },
+    {
+      "id": "spec.30list.ar",
+      "title": "التخصصات الثلاثون المدعومة بالميزة الأولى",
+      "source": "config/specialty_model_mapping.json",
+      "source_label": "تعيين نموذج التخصص",
+      "roles": ["guest", "p", "a"],
+      "lang": "ar",
+      "text": "النموذج التجريبي يوصي فقط ضمن هذه الأسماء كما هي في المنصة: Allergology, Anaesthetics, Cardiology, Dental oral and maxillo-facial surgery, Dermatology, Endocrinology, Gastroenterology, General hematology, General surgery, Geriatrics, Immunology, Infectious diseases, Neurology, Neurosurgery, Obstetrics and gynecology, Ophthalmology, Orthopaedics, Otorhinolaryngology, Paediatric surgery, Paediatrics, Pharmacology, Plastic surgery, Psychiatry, Public health and Preventive Medicine, Radiology, Respiratory medicine, Rheumatology, Urology, Vascular surgery, Venereology. باقي الدليل يبقى اختياراً يدوياً.",
+      "questions": ["ما التخصصات المدعومة في الميزة الأولى", "اسماء الثلاثين تخصصا"],
+      "followups": ["ما الفرق بين 56 و30؟"]
+    },
+    {
+      "id": "spec.30list.en",
+      "title": "Thirty specialties supported by Feature 01",
+      "source": "config/specialty_model_mapping.json",
+      "source_label": "Specialty model mapping",
+      "roles": ["guest", "p", "a"],
+      "lang": "en",
+      "text": "The experimental model may recommend only: Allergology, Anaesthetics, Cardiology, Dental oral and maxillo-facial surgery, Dermatology, Endocrinology, Gastroenterology, General hematology, General surgery, Geriatrics, Immunology, Infectious diseases, Neurology, Neurosurgery, Obstetrics and gynecology, Ophthalmology, Orthopaedics, Otorhinolaryngology, Paediatric surgery, Paediatrics, Pharmacology, Plastic surgery, Psychiatry, Public health and Preventive Medicine, Radiology, Respiratory medicine, Rheumatology, Urology, Vascular surgery, Venereology. Other directory specialties stay manual.",
+      "questions": ["which specialties does feature 01 support", "list of 30 specialties"],
+      "followups": ["Difference between 56 and 30?"]
+    }
+  ]
+}

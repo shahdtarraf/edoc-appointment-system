@@ -1,79 +1,85 @@
+<?php
+require __DIR__ . '/_init.php';
 
-    <?php
-    
-    
-
-    //import database
-    include("../connection.php");
-
-
-
-    if($_POST){
-        //print_r($_POST);
-        $result= $database->query("select * from webuser");
-        $name=$_POST['name'];
-        $nic=$_POST['nic'];
-        $oldemail=$_POST["oldemail"];
-        $address=$_POST['address'];
-        $email=$_POST['email'];
-        $tele=$_POST['Tele'];
-        $password=$_POST['password'];
-        $cpassword=$_POST['cpassword'];
-        $id=$_POST['id00'];
-        
-        if ($password==$cpassword){
-            $error='3';
-
-            $sqlmain= "select patient.pid from patient inner join webuser on patient.pemail=webuser.email where webuser.email=?;";
-            $stmt = $database->prepare($sqlmain);
-            $stmt->bind_param("s",$email);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            //$resultqq= $database->query("select * from doctor where docid='$id';");
-            if($result->num_rows==1){
-                $id2=$result->fetch_assoc()["pid"];
-            }else{
-                $id2=$id;
+$error = '';
+$ok = false;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!edoc_csrf_verify()) {
+        $error = edoc_t('status_err');
+    } else {
+        $name = trim((string) $_POST['name']);
+        $email = trim((string) $_POST['email']);
+        $address = trim((string) $_POST['address']);
+        $tele = trim((string) $_POST['Tele']);
+        $password = (string) $_POST['password'];
+        $cpassword = (string) $_POST['cpassword'];
+        $id = $userid;
+        $oldemail = $useremail;
+        if ($name === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $error = edoc_t('invalid_input');
+        } elseif ($password !== $cpassword) {
+            $error = edoc_t('password_mismatch');
+        } else {
+            $chk = $database->prepare('SELECT pid FROM patient WHERE pemail = ? LIMIT 1');
+            $chk->bind_param('s', $email);
+            $chk->execute();
+            $found = $chk->get_result()->fetch_assoc();
+            $chk->close();
+            if ($found && (int) $found['pid'] !== $id) {
+                $error = edoc_t('email_taken');
+            } else {
+                if ($password !== '') {
+                    $stored = edoc_store_password($password);
+                    if ($stored === false) {
+                        $error = edoc_t('status_err');
+                        $up = null;
+                    } else {
+                        $up = $database->prepare('UPDATE patient SET pemail=?, pname=?, ppassword=?, ptel=?, paddress=? WHERE pid=?');
+                        $up->bind_param('sssssi', $email, $name, $stored, $tele, $address, $id);
+                    }
+                } else {
+                    $up = $database->prepare('UPDATE patient SET pemail=?, pname=?, ptel=?, paddress=? WHERE pid=?');
+                    $up->bind_param('ssssi', $email, $name, $tele, $address, $id);
+                }
+                if ($error === '' && $up && $up->execute()) {
+                    $wu = $database->prepare('UPDATE webuser SET email=? WHERE email=? AND usertype=\'p\'');
+                    $wu->bind_param('ss', $email, $oldemail);
+                    $wu->execute();
+                    $wu->close();
+                    $_SESSION['user'] = $email;
+                    $useremail = $email;
+                    $ok = true;
+                } else {
+                    $error = edoc_t('status_err');
+                }
+                if ($up) {
+                    $up->close();
+                }
             }
-            
-
-            if($id2!=$id){
-                $error='1';
-                //$resultqq1= $database->query("select * from doctor where docemail='$email';");
-                //$did= $resultqq1->fetch_assoc()["docid"];
-                //if($resultqq1->num_rows==1){
-                    
-            }else{
-
-                //$sql1="insert into doctor(docemail,docname,docpassword,docnic,doctel,specialties) values('$email','$name','$password','$nic','$tele',$spec);";
-                $sql1="update patient set pemail='$email',pname='$name',ppassword='$password',pnic='$nic',ptel='$tele',paddress='$address' where pid=$id ;";
-                $database->query($sql1);
-                echo $sql1;
-                $sql1="update webuser set email='$email' where email='$oldemail' ;";
-                $database->query($sql1);
-                echo $sql1;
-                
-                $error= '4';
-                
-            }
-            
-        }else{
-            $error='2';
         }
-    
-    
-        
-        
-    }else{
-        //header('location: signup.php');
-        $error='3';
     }
-    
+}
 
-    header("location: settings.php?action=edit&error=".$error."&id=".$id);
-    ?>
-    
-   
+$stmt = $database->prepare('SELECT pid, pemail, pname, paddress, ptel FROM patient WHERE pid = ? LIMIT 1');
+$stmt->bind_param('i', $userid);
+$stmt->execute();
+$row = $stmt->get_result()->fetch_assoc();
+$stmt->close();
 
-</body>
-</html>
+edoc_app_start(edoc_t('profile'), 'p', $row['pname'], $row['pemail'], 'settings.php');
+if ($ok) {
+    edoc_alert('ok', edoc_t('status_ok'));
+}
+if ($error !== '') {
+    edoc_alert('error', $error);
+}
+echo '<div class="edoc-card"><form class="edoc-form" method="post">';
+echo edoc_csrf_field();
+echo '<label class="edoc-label">' . edoc_h(edoc_t('doctor_name')) . '<input class="edoc-field" name="name" required value="' . edoc_h($row['pname']) . '"></label>';
+echo '<label class="edoc-label">' . edoc_h(edoc_t('email')) . '<input class="edoc-field" type="email" name="email" required value="' . edoc_h($row['pemail']) . '"></label>';
+echo '<label class="edoc-label">' . edoc_h(edoc_t('address')) . '<input class="edoc-field" name="address" value="' . edoc_h($row['paddress']) . '"></label>';
+echo '<label class="edoc-label">' . edoc_h(edoc_t('phone')) . '<input class="edoc-field" name="Tele" value="' . edoc_h($row['ptel']) . '"></label>';
+echo '<label class="edoc-label">' . edoc_h(edoc_t('password')) . '<input class="edoc-field" type="password" name="password" autocomplete="new-password"></label>';
+echo '<label class="edoc-label">' . edoc_h(edoc_t('confirm_password')) . '<input class="edoc-field" type="password" name="cpassword"></label>';
+echo '<div class="edoc-form-actions"><button class="edoc-btn edoc-btn-primary" type="submit">' . edoc_h(edoc_t('save')) . '</button></div></form></div>';
+edoc_app_end();

@@ -67,6 +67,33 @@ if (is_readable('/usr/local/etc/edoc-ca.pem')) {
     $caFile = '/usr/local/etc/edoc-ca.pem';
 }
 
+$demoDbName = 'SQL_Database_edoc_demo';
+$demoDbUser = 'edoc_demo';
+$hostLower = strtolower((string) $servername);
+$demoAllowedHosts = array('127.0.0.1', 'localhost', 'demo-db', 'edoc-demo-db');
+$hostedDbMarkers = array('aiven', 'amazonaws', 'rds.', 'azure', 'cloud.google', 'digitalocean', 'railway', 'clever-cloud');
+$looksHosted = false;
+foreach ($hostedDbMarkers as $marker) {
+    if (strpos($hostLower, $marker) !== false) {
+        $looksHosted = true;
+        break;
+    }
+}
+$isDemoName = (strcasecmp((string) $dbname, $demoDbName) === 0);
+$isDemoUser = (strcasecmp((string) $username, $demoDbUser) === 0);
+if ($isDemoName || $isDemoUser) {
+    $hostAllowed = in_array($hostLower, $demoAllowedHosts, true);
+    if ($looksHosted || !$hostAllowed || !$isDemoName || !$isDemoUser) {
+        error_log('Demo database isolation check failed');
+        if (!defined('EDOC_HEALTH_CHECK')) {
+            http_response_code(500);
+            die('Database connection failed.');
+        }
+        $database = null;
+        return;
+    }
+}
+
 mysqli_report(MYSQLI_REPORT_OFF);
 
 try {

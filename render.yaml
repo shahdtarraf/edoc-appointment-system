@@ -1,6 +1,23 @@
+# Blueprint for a future Render Staging environment.
+# Does not create resources until applied in the Render dashboard.
+# Do not put secrets here. Use sync: false and the dashboard.
+#
+# Feature 03 (no-show) is intentionally omitted: CC BY-NC-SA 4.0,
+# commercial_use_approved=false, Demo research only — not a public service.
+# Do not add a noshow web service. Do not set NOSHOW_URL or NOSHOW_TOKEN
+# on edoc-web-staging. PHP must run with Feature 01 and Feature 02 only.
+#
+# Set AI_SERVICE_URL and ASSISTANT_URL to the public HTTPS origins of the
+# sibling Render services (no trailing slash). Never use localhost between
+# Render services.
+#
+# MySQL/MariaDB is not provisioned by this file. Use a separate Staging
+# database (external managed MySQL/MariaDB). Never point these services
+# at the production Aiven database.
+
 services:
   - type: web
-    name: edoc-web
+    name: edoc-web-staging
     runtime: docker
     dockerfilePath: ./Dockerfile
     dockerContext: .
@@ -11,27 +28,33 @@ services:
       - key: DB_HOST
         sync: false
       - key: DB_PORT
-        value: "3306"
+        sync: false
       - key: DB_NAME
-        value: SQL_Database_edoc
+        sync: false
       - key: DB_USER
         sync: false
       - key: DB_PASSWORD
         sync: false
+      - key: DB_SSL
+        value: "true"
+      - key: SESSION_COOKIE_SECURE
+        value: "1"
       - key: AI_SERVICE_URL
         sync: false
       - key: AI_SERVICE_TIMEOUT
         value: "6"
       - key: AI_SERVICE_TOKEN
         sync: false
-      - key: SESSION_COOKIE_SECURE
-        value: "1"
+      - key: ASSISTANT_URL
+        sync: false
+      - key: ASSISTANT_TOKEN
+        sync: false
 
   - type: web
-    name: edoc-specialty-recommend
+    name: edoc-specialty-staging
     runtime: docker
-    dockerfilePath: ./services/specialty-recommend/Dockerfile
-    dockerContext: ./services/specialty-recommend
+    dockerfilePath: ./AI/feature01_specialty/Dockerfile
+    dockerContext: ./AI/feature01_specialty
     healthCheckPath: /health
     envVars:
       - key: PORT
@@ -39,6 +62,14 @@ services:
       - key: AI_SERVICE_TOKEN
         sync: false
 
-# MySQL is not created here on purpose.
-# A Render Private Service plus persistent disk is a paid resource.
-# Configure the database separately after review. See DEPLOY.md.
+  - type: web
+    name: edoc-assistant-staging
+    runtime: docker
+    dockerfilePath: ./AI/feature02_assistant/Dockerfile
+    dockerContext: ./AI/feature02_assistant
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: "10000"
+      - key: ASSISTANT_SERVICE_TOKEN
+        sync: false

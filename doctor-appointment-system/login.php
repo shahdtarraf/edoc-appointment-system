@@ -7,14 +7,18 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     }
 }
 
-$_SESSION["user"] = "";
-$_SESSION["usertype"] = "";
+$savedLang = isset($_SESSION['edoc_lang']) ? $_SESSION['edoc_lang'] : null;
+$_SESSION['user'] = '';
+$_SESSION['usertype'] = '';
+if (is_string($savedLang) && ($savedLang === 'ar' || $savedLang === 'en')) {
+    $_SESSION['edoc_lang'] = $savedLang;
+}
 
-date_default_timezone_set('Asia/Kolkata');
-$date = date('Y-m-d');
-$_SESSION["date"] = $date;
+date_default_timezone_set('Asia/Damascus');
+$_SESSION['date'] = date('Y-m-d');
 
-include("connection.php");
+require_once __DIR__ . '/includes/layout.php';
+edoc_bootstrap(true);
 
 function edoc_login_success($email, $usertype, $location)
 {
@@ -28,184 +32,103 @@ function edoc_login_success($email, $usertype, $location)
     exit;
 }
 
+function edoc_login_check($database, $role, $email, $password)
+{
+    $map = array(
+        'p' => array('patient', 'ppassword', 'pemail'),
+        'a' => array('admin', 'apassword', 'aemail'),
+        'd' => array('doctor', 'docpassword', 'docemail'),
+    );
+    if (!isset($map[$role])) {
+        return false;
+    }
+    list($table, $column, $emailColumn) = $map[$role];
+    $sql = 'SELECT `' . $column . '` FROM `' . $table . '` WHERE `' . $emailColumn . '` = ? LIMIT 1';
+    $stmt = $database->prepare($sql);
+    if ($stmt === false) {
+        return false;
+    }
+    $stmt->bind_param('s', $email);
+    $ok = false;
+    $stored = '';
+    if ($stmt->execute()) {
+        $row = $stmt->get_result()->fetch_assoc();
+        if ($row && isset($row[$column])) {
+            $stored = (string) $row[$column];
+            $ok = edoc_password_ok($password, $stored);
+        }
+    }
+    $stmt->close();
+    if ($ok === true) {
+        edoc_password_upgrade_after_success($database, $password, $stored, $table, $column, $emailColumn, $email);
+    }
+    return $ok;
+}
+
+$loginFailed = false;
 if ($_POST) {
     $email = isset($_POST['useremail']) ? trim((string) $_POST['useremail']) : '';
     $password = isset($_POST['userpassword']) ? (string) $_POST['userpassword'] : '';
-
-    $error = '<label for="promter" class="form-label"></label>';
-    $genericError = '<label for="promter" class="form-label" style="color:rgb(255, 62, 62);text-align:center;">Wrong credentials: Invalid email or password</label>';
-
-    if ($email === '' || $password === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 255) {
-        $error = $genericError;
+    $genericFail = true;
+    if (!edoc_csrf_verify()) {
+        $loginFailed = true;
+    } elseif ($email === '' || $password === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($email) > 255) {
+        $loginFailed = true;
     } elseif (!isset($database) || !($database instanceof mysqli) || $database->connect_error) {
         error_log('Login aborted: database unavailable');
-        $error = $genericError;
+        $loginFailed = true;
     } else {
         $stmt = $database->prepare('SELECT email, usertype FROM webuser WHERE email = ? LIMIT 1');
         if ($stmt === false) {
             error_log('Login prepare failed');
-            $error = $genericError;
+            $loginFailed = true;
         } else {
             $stmt->bind_param('s', $email);
             if (!$stmt->execute()) {
                 error_log('Login execute failed');
-                $error = $genericError;
+                $loginFailed = true;
                 $stmt->close();
             } else {
                 $result = $stmt->get_result();
                 $stmt->close();
                 if ($result === false || $result->num_rows !== 1) {
-                    $error = $genericError;
+                    $loginFailed = true;
                 } else {
                     $utype = $result->fetch_assoc()['usertype'];
-
-                    if ($utype == 'p') {
-                        $checkerStmt = $database->prepare('SELECT pemail FROM patient WHERE pemail = ? AND ppassword = ? LIMIT 1');
-                        if ($checkerStmt === false) {
-                            error_log('Login patient prepare failed');
-                            $error = $genericError;
-                        } else {
-                            $checkerStmt->bind_param('ss', $email, $password);
-                            $loginOk = false;
-                            if ($checkerStmt->execute()) {
-                                $checker = $checkerStmt->get_result();
-                                $loginOk = ($checker && $checker->num_rows == 1);
-                            }
-                            $checkerStmt->close();
-                            if ($loginOk && edoc_login_success($email, 'p', 'patient/index.php')) {
-                                // redirected
-                            }
-                            $error = $genericError;
-                        }
-                    } elseif ($utype == 'a') {
-                        $checkerStmt = $database->prepare('SELECT aemail FROM admin WHERE aemail = ? AND apassword = ? LIMIT 1');
-                        if ($checkerStmt === false) {
-                            error_log('Login admin prepare failed');
-                            $error = $genericError;
-                        } else {
-                            $checkerStmt->bind_param('ss', $email, $password);
-                            $loginOk = false;
-                            if ($checkerStmt->execute()) {
-                                $checker = $checkerStmt->get_result();
-                                $loginOk = ($checker && $checker->num_rows == 1);
-                            }
-                            $checkerStmt->close();
-                            if ($loginOk && edoc_login_success($email, 'a', 'admin/index.php')) {
-                                // redirected
-                            }
-                            $error = $genericError;
-                        }
-                    } elseif ($utype == 'd') {
-                        $checkerStmt = $database->prepare('SELECT docemail FROM doctor WHERE docemail = ? AND docpassword = ? LIMIT 1');
-                        if ($checkerStmt === false) {
-                            error_log('Login doctor prepare failed');
-                            $error = $genericError;
-                        } else {
-                            $checkerStmt->bind_param('ss', $email, $password);
-                            $loginOk = false;
-                            if ($checkerStmt->execute()) {
-                                $checker = $checkerStmt->get_result();
-                                $loginOk = ($checker && $checker->num_rows == 1);
-                            }
-                            $checkerStmt->close();
-                            if ($loginOk && edoc_login_success($email, 'd', 'doctor/index.php')) {
-                                // redirected
-                            }
-                            $error = $genericError;
-                        }
+                    if ($utype == 'p' && edoc_login_check($database, 'p', $email, $password)) {
+                        edoc_login_success($email, 'p', 'patient/index.php');
+                    } elseif ($utype == 'a' && edoc_login_check($database, 'a', $email, $password)) {
+                        edoc_login_success($email, 'a', 'admin/index.php');
+                    } elseif ($utype == 'd' && edoc_login_check($database, 'd', $email, $password)) {
+                        edoc_login_success($email, 'd', 'doctor/index.php');
                     } else {
-                        $error = $genericError;
+                        $loginFailed = true;
                     }
                 }
             }
         }
     }
-} else {
-    $error = '<label for="promter" class="form-label">&nbsp;</label>';
+    if ($genericFail && $loginFailed) {
+        // generic only
+    }
 }
-?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/animations.css">  
-    <link rel="stylesheet" href="css/main.css">  
-    <link rel="stylesheet" href="css/login.css">
-        
-    <title>Login</title>
 
-    
-    
-</head>
-<body>
-    <center>
-    <div class="container">
-        <table border="0" style="margin: 0;padding: 0;width: 60%;">
-            <tr>
-                <td>
-                    <p class="header-text">Welcome Back!</p>
-                </td>
-            </tr>
-        <div class="form-body">
-            <tr>
-                <td>
-                    <p class="sub-text">Login with your details to continue</p>
-                </td>
-            </tr>
-            <tr>
-                <form action="" method="POST" >
-                <td class="label-td">
-                    <label for="useremail" class="form-label">Email: </label>
-                </td>
-            </tr>
-            <tr>
-                <td class="label-td">
-                    <input type="email" name="useremail" class="input-text" placeholder="Email Address" required>
-                </td>
-            </tr>
-            <tr>
-                <td class="label-td">
-                    <label for="userpassword" class="form-label">Password: </label>
-                </td>
-            </tr>
-
-            <tr>
-                <td class="label-td">
-                    <input type="Password" name="userpassword" class="input-text" placeholder="Password" required>
-                </td>
-            </tr>
-
-
-            <tr>
-                <td><br>
-                <?php echo $error ?>
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    <input type="submit" value="Login" class="login-btn btn-primary btn">
-                </td>
-            </tr>
-        </div>
-            <tr>
-                <td>
-                    <br>
-                    <label for="" class="sub-text" style="font-weight: 280;">Don't have an account&#63; </label>
-                    <a href="signup.php" class="hover-link1 non-style-link">Sign Up</a>
-                    <br><br><br>
-                </td>
-            </tr>
-                        
-                        
-    
-                        
-                    </form>
-        </table>
-
-    </div>
-</center>
-</body>
-</html>
+edoc_head(edoc_t('login_title'));
+edoc_public_nav();
+echo '<div class="edoc-auth"><div class="edoc-auth-card">';
+echo '<a class="edoc-brand" href="index.php">' . edoc_h(edoc_t('brand')) . '</a>';
+echo '<h1>' . edoc_h(edoc_t('login_title')) . '</h1>';
+echo '<p class="edoc-muted">' . edoc_h(edoc_t('login_sub')) . '</p>';
+if ($loginFailed) {
+    edoc_alert('error', edoc_t('wrong_credentials'));
+}
+echo '<form method="post" action="login.php" style="display:grid;gap:12px;margin-top:16px">';
+echo edoc_csrf_field();
+echo '<label class="edoc-label">' . edoc_h(edoc_t('email')) . '<input class="edoc-field" type="email" name="useremail" required maxlength="255" autocomplete="username"></label>';
+echo '<label class="edoc-label">' . edoc_h(edoc_t('password')) . '<input class="edoc-field" type="password" name="userpassword" required autocomplete="current-password"></label>';
+echo '<button class="edoc-btn edoc-btn-primary" type="submit">' . edoc_h(edoc_t('login_btn')) . '</button>';
+echo '</form>';
+echo '<p>' . edoc_h(edoc_t('no_account')) . ' <a href="signup.php">' . edoc_h(edoc_t('nav_signup')) . '</a></p>';
+echo '<p><a href="' . edoc_h(edoc_lang_toggle_url()) . '">' . edoc_h(edoc_t('lang_switch')) . '</a> · <a href="index.php">' . edoc_h(edoc_t('nav_home')) . '</a></p>';
+echo '</div></div>';
+edoc_page_end();

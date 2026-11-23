@@ -1,0 +1,44 @@
+{
+  "documents": [
+    {
+      "id": "doctor.dash.en",
+      "title": "Doctor console",
+      "source": "doctor/index.php",
+      "source_label": "Doctor console",
+      "roles": ["d"],
+      "lang": "en",
+      "text": "After doctor login you see the doctor console with counts of your sessions and bookings tied only to your sessions in the Demo database.",
+      "questions": ["how does the doctor dashboard work", "doctor console"]
+    },
+    {
+      "id": "doctor.sessions.en",
+      "title": "Doctor sessions",
+      "source": "doctor/schedule.php",
+      "source_label": "My sessions",
+      "roles": ["d"],
+      "lang": "en",
+      "text": "My sessions lists your simulated sessions (title, date, time, capacity). Other doctors' sessions are not shown.",
+      "questions": ["where are my sessions", "doctor schedule"]
+    },
+    {
+      "id": "doctor.appts.en",
+      "title": "Doctor appointments",
+      "source": "doctor/appointment.php / doctor/patient.php",
+      "source_label": "Booked appointments",
+      "roles": ["d"],
+      "lang": "en",
+      "text": "Booked appointments lists only bookings on your sessions, with the demo patient name. Patients lists people who booked with you. A doctor cannot open the admin console or another doctor's bookings.",
+      "questions": ["see my patients bookings", "can I see another doctor's appointments"]
+    },
+    {
+      "id": "doctor.profile.en",
+      "title": "Doctor profile",
+      "source": "doctor/settings.php / doctor/edit-doc.php",
+      "source_label": "Settings",
+      "roles": ["d"],
+      "lang": "en",
+      "text": "Settings opens your profile so you can update name, email, demo phone, and password. No real medical license is shown.",
+      "questions": ["edit doctor profile", "doctor settings"]
+    }
+  ]
+}

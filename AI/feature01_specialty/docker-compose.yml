@@ -1,0 +1,8 @@
+services:
+  specialty-recommend:
+    build: .
+    ports:
+      - "8081:8081"
+    environment:
+      PORT: "8081"
+      AI_SERVICE_TOKEN: ${AI_SERVICE_TOKEN:-local-dev-token}

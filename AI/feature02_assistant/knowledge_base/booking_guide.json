@@ -1,0 +1,46 @@
+{
+  "documents": [
+    {
+      "id": "booking.steps.ar",
+      "title": "خطوات حجز جلسة تجريبية",
+      "source": "patient/schedule.php / booking.php / booking-complete.php",
+      "source_label": "الجلسات والحجز",
+      "roles": ["guest", "p"],
+      "lang": "ar",
+      "text": "1. اختر طبيباً أو افتح الجلسات.\n2. اختر جلسة محاكاة بتاريخ اليوم أو بعده.\n3. راجع شارة DEMO والطبيب التجريبي.\n4. اضغط تأكيد الحجز التجريبي.\n5. يظهر رقم الموعد.\n6. راجع حجوزاتي. الحجز محاكاة ولا يرسل إشعارات. هذا المساعد لا يحجز نيابة عنك.",
+      "questions": ["كيف أحجز جلسة", "خطوات الحجز", "كيف أحجز موعداً", "بدي احجز عند دكتور", "وين بلاقي المواعيد", "شو طريقة الحجز", "كيف اختار الجلسة"],
+      "followups": ["أين أجد مواعيدي؟", "ما معنى Demo Appointment؟"]
+    },
+    {
+      "id": "booking.steps.en",
+      "title": "How to book a simulated session",
+      "source": "patient/schedule.php / booking.php / booking-complete.php",
+      "source_label": "Sessions and booking",
+      "roles": ["guest", "p"],
+      "lang": "en",
+      "text": "1. Pick a doctor or open Sessions.\n2. Choose a simulated session from today onward.\n3. Review the DEMO badge.\n4. Confirm simulated booking.\n5. Note the appointment number.\n6. Open My bookings. This chat cannot create the booking.",
+      "questions": ["how do I book a session", "booking steps", "make an appointment", "how do I pick a session"],
+      "followups": ["Where are my appointments?", "What does a Demo Appointment mean?"]
+    },
+    {
+      "id": "booking.csrf.ar",
+      "title": "تأكيد الحجز",
+      "source": "patient/booking-complete.php",
+      "source_label": "تأكيد الحجز التجريبي",
+      "roles": ["guest", "p"],
+      "lang": "ar",
+      "text": "التأكيد يتم من صفحة الحجز بزر تأكيد الحجز التجريبي. إن امتلأت الجلسة أو فشل التحقق يُعاد توجيهك إلى الجلسات. هذا المساعد لا ينشئ الحجوزات نيابة عنك.",
+      "questions": ["فشل الحجز", "لم يظهر رقم الموعد"]
+    },
+    {
+      "id": "booking.csrf.en",
+      "title": "Confirming a booking",
+      "source": "patient/booking-complete.php",
+      "source_label": "Confirm simulated booking",
+      "roles": ["guest", "p"],
+      "lang": "en",
+      "text": "Confirm on the booking page with Confirm simulated booking. If the session is full or verification fails you return to Sessions. This assistant does not create bookings for you.",
+      "questions": ["booking failed", "no appointment number"]
+    }
+  ]
+}

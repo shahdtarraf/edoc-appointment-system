@@ -1,140 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/animations.css">  
-    <link rel="stylesheet" href="css/main.css">  
-    <link rel="stylesheet" href="css/signup.css">
-        
-    <title>Sign Up</title>
-    
-</head>
-<body>
 <?php
+require_once __DIR__ . '/includes/layout.php';
+edoc_bootstrap(false);
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+$savedLang = isset($_SESSION['edoc_lang']) ? $_SESSION['edoc_lang'] : null;
+$_SESSION['user'] = '';
+$_SESSION['usertype'] = '';
+if ($savedLang === 'ar' || $savedLang === 'en') {
+    $_SESSION['edoc_lang'] = $savedLang;
+}
+require_once __DIR__ . '/csrf.php';
 
-//learn from w3schools.com
-//Unset all the server side variables
-
-session_start();
-
-$_SESSION["user"]="";
-$_SESSION["usertype"]="";
-
-// Set the new timezone
-date_default_timezone_set('Asia/Kolkata');
-$date = date('Y-m-d');
-
-$_SESSION["date"]=$date;
-
-
-
-if($_POST){
-
-    
-
-    $_SESSION["personal"]=array(
-        'fname'=>$_POST['fname'],
-        'lname'=>$_POST['lname'],
-        'address'=>$_POST['address'],
-        'nic'=>$_POST['nic'],
-        'dob'=>$_POST['dob']
-    );
-
-
-    print_r($_SESSION["personal"]);
-    header("location: create-account.php");
-
-
-
-
+$error = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!edoc_csrf_verify()) {
+        $error = edoc_t('status_err');
+    } else {
+        $fname = trim((string) $_POST['fname']);
+        $lname = trim((string) $_POST['lname']);
+        $address = trim((string) $_POST['address']);
+        $nic = 'NOT-A-NATIONAL-ID';
+        $dob = (string) $_POST['dob'];
+        if ($fname === '' || $lname === '' || strlen($fname) > 60 || strlen($lname) > 60) {
+            $error = edoc_t('invalid_input');
+        } else {
+            $_SESSION['personal'] = array(
+                'fname' => $fname,
+                'lname' => $lname,
+                'address' => $address,
+                'nic' => $nic,
+                'dob' => $dob,
+            );
+            header('location: create-account.php');
+            exit;
+        }
+    }
 }
 
-?>
-
-
-    <center>
-    <div class="container">
-        <table border="0">
-            <tr>
-                <td colspan="2">
-                    <p class="header-text">Let's Get Started</p>
-                    <p class="sub-text">Add Your Personal Details to Continue</p>
-                </td>
-            </tr>
-            <tr>
-                <form action="" method="POST" >
-                <td class="label-td" colspan="2">
-                    <label for="name" class="form-label">Name: </label>
-                </td>
-            </tr>
-            <tr>
-                <td class="label-td">
-                    <input type="text" name="fname" class="input-text" placeholder="First Name" required>
-                </td>
-                <td class="label-td">
-                    <input type="text" name="lname" class="input-text" placeholder="Last Name" required>
-                </td>
-            </tr>
-            <tr>
-                <td class="label-td" colspan="2">
-                    <label for="address" class="form-label">Address: </label>
-                </td>
-            </tr>
-            <tr>
-                <td class="label-td" colspan="2">
-                    <input type="text" name="address" class="input-text" placeholder="Address" required>
-                </td>
-            </tr>
-            <tr>
-                <td class="label-td" colspan="2">
-                    <label for="nic" class="form-label">NIC: </label>
-                </td>
-            </tr>
-            <tr>
-                <td class="label-td" colspan="2">
-                    <input type="text" name="nic" class="input-text" placeholder="NIC Number" required>
-                </td>
-            </tr>
-            <tr>
-                <td class="label-td" colspan="2">
-                    <label for="dob" class="form-label">Date of Birth: </label>
-                </td>
-            </tr>
-            <tr>
-                <td class="label-td" colspan="2">
-                    <input type="date" name="dob" class="input-text" required>
-                </td>
-            </tr>
-            <tr>
-                <td class="label-td" colspan="2">
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    <input type="reset" value="Reset" class="login-btn btn-primary-soft btn" >
-                </td>
-                <td>
-                    <input type="submit" value="Next" class="login-btn btn-primary btn">
-                </td>
-
-            </tr>
-            <tr>
-                <td colspan="2">
-                    <br>
-                    <label for="" class="sub-text" style="font-weight: 280;">Already have an account&#63; </label>
-                    <a href="login.php" class="hover-link1 non-style-link">Login</a>
-                    <br><br><br>
-                </td>
-            </tr>
-
-                    </form>
-            </tr>
-        </table>
-
-    </div>
-</center>
-</body>
-</html>
+edoc_head(edoc_t('signup_title'));
+edoc_public_nav();
+echo '<div class="edoc-auth"><div class="edoc-auth-card">';
+echo '<a class="edoc-brand" href="index.php">' . edoc_h(edoc_t('brand')) . '</a>';
+echo '<h1>' . edoc_h(edoc_t('signup_title')) . '</h1>';
+if ($error !== '') {
+    edoc_alert('error', $error);
+}
+echo '<form class="edoc-form" method="post">';
+echo edoc_csrf_field();
+echo '<label class="edoc-label">' . edoc_h(edoc_t('first_name')) . '<input class="edoc-field" name="fname" required maxlength="60"></label>';
+echo '<label class="edoc-label">' . edoc_h(edoc_t('last_name')) . '<input class="edoc-field" name="lname" required maxlength="60"></label>';
+echo '<label class="edoc-label">' . edoc_h(edoc_t('address')) . '<input class="edoc-field" name="address" maxlength="120" value="' . edoc_h(edoc_t('demo_clinic_area')) . '"></label>';
+echo '<label class="edoc-label">' . edoc_h(edoc_t('dob')) . '<input class="edoc-field" type="date" name="dob" required></label>';
+echo '<div class="edoc-form-actions"><button class="edoc-btn edoc-btn-primary" type="submit">' . edoc_h(edoc_t('next_step')) . '</button></div>';
+echo '</form>';
+echo '<p>' . edoc_h(edoc_t('already_account')) . ' <a href="login.php">' . edoc_h(edoc_t('nav_login')) . '</a></p>';
+echo '<p><a href="' . edoc_h(edoc_lang_toggle_url()) . '">' . edoc_h(edoc_t('lang_switch')) . '</a></p>';
+echo '</div></div>';
+edoc_page_end();

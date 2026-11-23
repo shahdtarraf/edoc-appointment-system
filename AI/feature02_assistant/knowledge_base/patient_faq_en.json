@@ -1,0 +1,74 @@
+{
+  "documents": [
+    {
+      "id": "patient.signup.en",
+      "title": "Create a patient account",
+      "source": "signup.php / create-account.php",
+      "source_label": "Sign up",
+      "roles": ["guest", "p"],
+      "lang": "en",
+      "text": "From Home choose Sign up. Enter name, address, and date of birth, then Next. On the next screen enter email and password. After success you land on the patient console. These accounts are for the demo sandbox only.",
+      "questions": ["how do I create an account", "sign up", "register", "how do I start"]
+    },
+    {
+      "id": "patient.login.en",
+      "title": "Patient login",
+      "source": "login.php",
+      "source_label": "Log in",
+      "roles": ["guest", "p"],
+      "lang": "en",
+      "text": "Open Log in and enter email and password. A matching patient account opens patient/index.php. Do not share your password in chat.",
+      "questions": ["how do I log in", "cannot login"]
+    },
+    {
+      "id": "patient.specialties.en",
+      "title": "Find a specialty",
+      "source": "patient/specialties.php",
+      "source_label": "Specialties",
+      "roles": ["p"],
+      "lang": "en",
+      "text": "Open Specialties in the patient menu. Search by name. The directory lists all 56 specialties with demo doctor counts. Open a card to see doctors in that specialty.",
+      "questions": ["how do I search specialties", "where are specialties"]
+    },
+    {
+      "id": "patient.doctors.en",
+      "title": "Find a doctor",
+      "source": "patient/doctors.php",
+      "source_label": "Find a doctor",
+      "roles": ["p"],
+      "lang": "en",
+      "text": "Open Find a doctor. Filter by specialty, facility, name, or sessions. Cards show an initials avatar and a Demo Doctor badge. View details opens the demo doctor page.",
+      "questions": ["how do I find a doctor", "doctor directory"]
+    },
+    {
+      "id": "patient.bookings.en",
+      "title": "Where to see my bookings",
+      "source": "patient/appointment.php",
+      "source_label": "My bookings",
+      "roles": ["p"],
+      "lang": "en",
+      "text": "Open My bookings in the sidebar. Simulated appointments show a ticket number and a DEMO badge. Cancel only from that page; this assistant cannot cancel for you.",
+      "questions": ["where are my appointments", "my bookings", "cancel booking"]
+    },
+    {
+      "id": "patient.settings.en",
+      "title": "Edit account details",
+      "source": "patient/settings.php / patient/edit-user.php",
+      "source_label": "Settings",
+      "roles": ["p"],
+      "lang": "en",
+      "text": "Open Settings then Profile. You can update display name, email, demo address, demo phone, and password. Never send a password in this chat.",
+      "questions": ["how do I edit my account", "change password"]
+    },
+    {
+      "id": "patient.dash.en",
+      "title": "Patient dashboard",
+      "source": "patient/index.php",
+      "source_label": "Patient console",
+      "roles": ["p"],
+      "lang": "en",
+      "text": "The patient dashboard shows Demo-database counts for doctors, specialties, sessions, and your bookings, plus shortcuts to those pages and the specialty helper.",
+      "questions": ["patient dashboard", "what after login"]
+    }
+  ]
+}

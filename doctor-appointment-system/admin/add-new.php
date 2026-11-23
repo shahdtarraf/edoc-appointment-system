@@ -1,89 +1,100 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../css/animations.css">  
-    <link rel="stylesheet" href="../css/main.css">  
-    <link rel="stylesheet" href="../css/admin.css">
-        
-    <title>Doctor</title>
-    <style>
-        .popup{
-            animation: transitionIn-Y-bottom 0.5s;
-        }
-</style>
-</head>
-<body>
-    <?php
+<?php
+require __DIR__ . '/_init.php';
 
-    //learn from w3schools.com
+$error = '';
+$ok = false;
+$name = '';
+$email = '';
+$tele = '000-DEMO-NEW';
+$spec = 1;
 
-    session_start();
-
-    if(isset($_SESSION["user"])){
-        if(($_SESSION["user"])=="" or $_SESSION['usertype']!='a'){
-            header("location: ../login.php");
-        }
-
-    }else{
-        header("location: ../login.php");
-    }
-    
-    
-
-    //import database
-    include("../connection.php");
-
-
-
-    if($_POST){
-        //print_r($_POST);
-        $result= $database->query("select * from webuser");
-        $name=$_POST['name'];
-        $nic=$_POST['nic'];
-        $spec=$_POST['spec'];
-        $email=$_POST['email'];
-        $tele=$_POST['Tele'];
-        $password=$_POST['password'];
-        $cpassword=$_POST['cpassword'];
-        
-        if ($password==$cpassword){
-            $error='3';
-            $result= $database->query("select * from webuser where email='$email';");
-            if($result->num_rows==1){
-                $error='1';
-            }else{
-
-                $sql1="insert into doctor(docemail,docname,docpassword,docnic,doctel,specialties) values('$email','$name','$password','$nic','$tele',$spec);";
-                $sql2="insert into webuser values('$email','d')";
-                $database->query($sql1);
-                $database->query($sql2);
-
-                //echo $sql1;
-                //echo $sql2;
-                $error= '4';
-                
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!edoc_csrf_verify()) {
+        $error = edoc_t('status_err');
+    } else {
+        $name = trim((string) $_POST['name']);
+        $email = trim((string) $_POST['email']);
+        $tele = trim((string) $_POST['Tele']);
+        $spec = (int) $_POST['spec'];
+        $password = (string) $_POST['password'];
+        $cpassword = (string) $_POST['cpassword'];
+        $nic = 'NOT-A-LICENSE';
+        if ($name === '' || strlen($name) > 120 || !filter_var($email, FILTER_VALIDATE_EMAIL) || $spec < 1) {
+            $error = edoc_t('invalid_input');
+        } elseif ($password !== $cpassword) {
+            $error = edoc_t('password_mismatch');
+        } else {
+            $chk = $database->prepare('SELECT email FROM webuser WHERE email = ? LIMIT 1');
+            $chk->bind_param('s', $email);
+            $chk->execute();
+            if ($chk->get_result()->num_rows === 1) {
+                $error = edoc_t('email_taken');
+            } else {
+                $stored = edoc_store_password($password);
+                $ins = null;
+                if ($stored === false) {
+                    $error = edoc_t('status_err');
+                } elseif (edoc_has_column($database, 'doctor', 'is_demo')) {
+                    $ins = $database->prepare(
+                        'INSERT INTO doctor (docemail, docname, docpassword, docnic, doctel, specialties, is_demo, record_source, verification_status)
+                         VALUES (?,?,?,?,?,?,1,?,?)'
+                    );
+                    $src = 'demo_seed_v1';
+                    $ver = 'synthetic_unverified';
+                    $ins->bind_param('sssssiss', $email, $name, $stored, $nic, $tele, $spec, $src, $ver);
+                } else {
+                    $ins = $database->prepare(
+                        'INSERT INTO doctor (docemail, docname, docpassword, docnic, doctel, specialties) VALUES (?,?,?,?,?,?)'
+                    );
+                    $ins->bind_param('sssssi', $email, $name, $stored, $nic, $tele, $spec);
+                }
+                $okIns = $ins && $ins->execute();
+                if ($ins) {
+                    $ins->close();
+                }
+                if ($okIns) {
+                    if (edoc_has_column($database, 'webuser', 'is_demo')) {
+                        $w = $database->prepare('INSERT INTO webuser (email, usertype, is_demo, record_source) VALUES (?,\'d\',1,\'demo_seed_v1\')');
+                        $w->bind_param('s', $email);
+                    } else {
+                        $w = $database->prepare('INSERT INTO webuser (email, usertype) VALUES (?,\'d\')');
+                        $w->bind_param('s', $email);
+                    }
+                    $w->execute();
+                    $w->close();
+                    $ok = true;
+                } else {
+                    $error = edoc_t('status_err');
+                }
             }
-            
-        }else{
-            $error='2';
+            $chk->close();
         }
-    
-    
-        
-        
-    }else{
-        //header('location: signup.php');
-        $error='3';
     }
-    
+}
 
-    header("location: doctors.php?action=add&error=".$error);
-    ?>
-    
-   
-
-</body>
-</html>
+$specs = $database->query('SELECT id, sname FROM specialties ORDER BY id');
+edoc_app_start(edoc_t('add_doctor'), 'a', $username, $useremail, 'doctors.php');
+if ($ok) {
+    edoc_alert('ok', edoc_t('status_ok'));
+}
+if ($error !== '') {
+    edoc_alert('error', $error);
+}
+echo '<div class="edoc-card"><form class="edoc-form" method="post">';
+echo edoc_csrf_field();
+echo '<p class="edoc-muted">' . edoc_h(edoc_t('synthetic')) . ' · ' . edoc_h(edoc_t('no_license')) . '</p>';
+echo '<label class="edoc-label">' . edoc_h(edoc_t('doctor_name')) . '<input class="edoc-field" name="name" required maxlength="120" value="' . edoc_h($name) . '"></label>';
+echo '<label class="edoc-label">' . edoc_h(edoc_t('email')) . '<input class="edoc-field" type="email" name="email" required maxlength="255" value="' . edoc_h($email) . '"></label>';
+echo '<label class="edoc-label">' . edoc_h(edoc_t('phone')) . '<input class="edoc-field" name="Tele" maxlength="32" value="' . edoc_h($tele) . '"></label>';
+echo '<label class="edoc-label">' . edoc_h(edoc_t('specialty')) . '<select class="edoc-field" name="spec">';
+while ($row = $specs->fetch_assoc()) {
+    $sel = ((int) $row['id'] === $spec) ? ' selected' : '';
+    echo '<option value="' . (int) $row['id'] . '"' . $sel . '>' . edoc_h($row['sname']) . '</option>';
+}
+echo '</select></label>';
+echo '<label class="edoc-label">' . edoc_h(edoc_t('password')) . '<input class="edoc-field" type="password" name="password" required autocomplete="new-password"></label>';
+echo '<label class="edoc-label">' . edoc_h(edoc_t('confirm_password')) . '<input class="edoc-field" type="password" name="cpassword" required></label>';
+echo '<div class="edoc-form-actions"><button class="edoc-btn edoc-btn-primary" type="submit">' . edoc_h(edoc_t('save')) . '</button>';
+echo '<a class="edoc-btn edoc-btn-soft" href="doctors.php">' . edoc_h(edoc_t('prev')) . '</a></div>';
+echo '</form></div>';
+edoc_app_end();

@@ -1,0 +1,44 @@
+{
+  "documents": [
+    {
+      "id": "spec.56vs30.ar",
+      "title": "56 تخصصاً مقابل 30 مدعومة بالميزة الأولى",
+      "source": "patient/specialties.php / config/specialty_model_mapping.json",
+      "source_label": "دليل التخصصات ومساعد التخصص",
+      "roles": ["guest", "p", "d", "a"],
+      "lang": "ar",
+      "text": "دليل eDoc يعرض 56 تخصصاً بأسمائها ومعرّفاتها الأصلية. مساعد اختيار التخصص (الميزة الأولى) يوصي فقط ضمن 30 تخصصاً درّبها النموذج. التخصصات غير المدعومة تبقى في الدليل اليدوي ويمكن اختيارها دون التوصية الآلية. أسماء التخصصات لم تُغيَّر.",
+      "questions": ["ما الفرق بين 56 و30", "ما الفرق بين التخصصات الـ56 والتخصصات الثلاثين", "لماذا 30 تخصصاً", "التخصصات المدعومة", "56 تخصصا مقابل 30"]
+    },
+    {
+      "id": "spec.56vs30.en",
+      "title": "56 specialties vs 30 model-supported",
+      "source": "patient/specialties.php / config/specialty_model_mapping.json",
+      "source_label": "Specialty directory and helper",
+      "roles": ["guest", "p", "d", "a"],
+      "lang": "en",
+      "text": "The eDoc directory lists 56 specialties with their original ids and names. Feature 01 specialty helper may recommend only the 30 specialties the published model was trained on. The other specialties remain in the manual directory. Specialty names were not renamed.",
+      "questions": ["difference between 56 and 30", "difference between 56 and 30 specialties", "why 30 specialties", "supported specialties"]
+    },
+    {
+      "id": "spec.directory.ar",
+      "title": "دليل التخصصات العام",
+      "source": "specialties.php",
+      "source_label": "دليل التخصصات",
+      "roles": ["guest", "p"],
+      "lang": "ar",
+      "text": "من الصفحة الرئيسية افتح دليل التخصصات. النتائج مقسمة إلى صفحات. يظهر عدد الأطباء التجريبيين مع شارة Demo. اختيار تخصص وأنت مسجّل كمريض يفتح قائمة أطبائه.",
+      "questions": ["دليل التخصصات", "كم عدد التخصصات"]
+    },
+    {
+      "id": "spec.directory.en",
+      "title": "Public specialty directory",
+      "source": "specialties.php",
+      "source_label": "Specialties",
+      "roles": ["guest", "p"],
+      "lang": "en",
+      "text": "From Home open the specialty directory. Results are paginated. Each card shows the demo doctor count and a Demo badge. Signed-in patients can open the matching doctor list.",
+      "questions": ["specialty directory", "how many specialties"]
+    }
+  ]
+}

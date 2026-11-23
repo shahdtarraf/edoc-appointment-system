@@ -6,6 +6,9 @@
 .env.production
 *.log
 *.zip
+AI/
+_predeploy_backups/
+scripts/
 docker-compose.yml
 render.yaml
 DEPLOY.md

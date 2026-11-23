@@ -1,0 +1,44 @@
+{
+  "documents": [
+    {
+      "id": "admin.dash.en",
+      "title": "Admin console",
+      "source": "admin/index.php",
+      "source_label": "Administration",
+      "roles": ["a"],
+      "lang": "en",
+      "text": "The admin dashboard shows live Demo-database counts for doctors, specialties, facilities, sessions, bookings, and patients, plus the five AI-feature statuses.",
+      "questions": ["admin dashboard", "admin stats"]
+    },
+    {
+      "id": "admin.doctors.en",
+      "title": "Managing doctors",
+      "source": "admin/doctors.php / add-new.php / edit-doc.php",
+      "source_label": "Doctors",
+      "roles": ["a"],
+      "lang": "en",
+      "text": "From Doctors you can search, add, edit, or delete. Adding needs name, email, specialty, and password. Records are synthetic with no real license. Delete confirms on that page.",
+      "questions": ["how does admin manage doctors", "add a doctor"]
+    },
+    {
+      "id": "admin.sessions.en",
+      "title": "Sessions and bookings",
+      "source": "admin/schedule.php / add-session.php / appointment.php",
+      "source_label": "Sessions and bookings",
+      "roles": ["a"],
+      "lang": "en",
+      "text": "Sessions lists simulated sessions and a form to add one (title, date, time, doctor, capacity). Bookings lists simulated appointments. Specialties and facilities are read from the Demo database.",
+      "questions": ["how does admin manage sessions", "add a session", "facilities", "how are facilities managed"]
+    },
+    {
+      "id": "admin.users.en",
+      "title": "Accounts and specialties",
+      "source": "admin/patient.php / specialties.php / facilities.php",
+      "source_label": "Accounts",
+      "roles": ["a"],
+      "lang": "en",
+      "text": "Accounts lists Demo patients. Specialties lists all 56 with doctor counts. Facilities lists Latakia display-area demo clinics only.",
+      "questions": ["user accounts", "manage specialties"]
+    }
+  ]
+}

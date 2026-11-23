@@ -18,7 +18,7 @@ sed -i "s/<VirtualHost \*:80>/<VirtualHost *:${PORT}>/" /etc/apache2/sites-enabl
 # Apache workers often do not inherit container env vars. Pass them explicitly
 # and also write a PHP array outside the web root for connection.php.
 : > /etc/apache2/conf-available/edoc-passenv.conf
-for env_name in DB_HOST DB_PORT DB_NAME DB_USER DB_PASSWORD DB_SSL DB_SSL_CA AI_SERVICE_URL AI_SERVICE_TIMEOUT AI_SERVICE_TOKEN SESSION_COOKIE_SECURE; do
+for env_name in DB_HOST DB_PORT DB_NAME DB_USER DB_PASSWORD DB_SSL DB_SSL_CA AI_SERVICE_URL AI_SERVICE_TIMEOUT AI_SERVICE_TOKEN ASSISTANT_URL ASSISTANT_TOKEN NOSHOW_URL NOSHOW_TOKEN SESSION_COOKIE_SECURE; do
     if [ -n "${!env_name:-}" ]; then
         printf 'PassEnv %s\n' "$env_name" >> /etc/apache2/conf-available/edoc-passenv.conf
     fi
@@ -26,7 +26,7 @@ done
 a2enconf edoc-passenv >/dev/null
 
 php -r '
-$keys = array("DB_HOST", "DB_PORT", "DB_NAME", "DB_USER", "DB_PASSWORD", "DB_SSL", "DB_SSL_CA", "AI_SERVICE_URL", "AI_SERVICE_TIMEOUT", "AI_SERVICE_TOKEN");
+$keys = array("DB_HOST", "DB_PORT", "DB_NAME", "DB_USER", "DB_PASSWORD", "DB_SSL", "DB_SSL_CA", "AI_SERVICE_URL", "AI_SERVICE_TIMEOUT", "AI_SERVICE_TOKEN", "ASSISTANT_URL", "ASSISTANT_TOKEN", "NOSHOW_URL", "NOSHOW_TOKEN");
 $out = "<?php\nreturn array(\n";
 foreach ($keys as $key) {
     $value = getenv($key);

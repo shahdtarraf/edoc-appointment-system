@@ -1,0 +1,48 @@
+{
+  "documents": [
+    {
+      "id": "ai.f01.ar",
+      "title": "مساعد اختيار التخصص",
+      "source": "patient/specialty-assist.php",
+      "source_label": "مساعد التخصص",
+      "roles": ["p", "a", "guest"],
+      "lang": "ar",
+      "text": "الميزة الأولى — توصية التخصص — منفّذة تجريبياً للمريض في صفحة مساعد التخصص:\n1. اكتب وصفاً قصيراً.\n2. اضغط الحصول على الاقتراح.\n3. إن قُبلت التوصية يظهر تخصص واحد من 30 تخصصاً مدعوماً مع زر لعرض أطبائه.\n4. يمكنك دائماً الاختيار اليدوي من التخصصات.\nليست تشخيصاً. دردشة هذا المساعد لا ترسل الأعراض إلى تلك الخدمة.",
+      "questions": ["ما وظيفة مساعد اختيار التخصص", "كيف أستخدم الميزة الأولى", "كيف أستخدم التوصية بالتخصص", "specialty assist", "ما التخصص المناسب لي"],
+      "followups": ["ما الفرق بين 56 و30؟", "ماذا يفعل هذا المساعد؟"]
+    },
+    {
+      "id": "ai.f01.en",
+      "title": "Specialty helper",
+      "source": "patient/specialty-assist.php",
+      "source_label": "Specialty helper",
+      "roles": ["p", "a", "guest"],
+      "lang": "en",
+      "text": "Feature 01 — Specialty recommendation — is live (experimental) on Specialty helper:\n1. Briefly describe what you want to review.\n2. Tap Get the suggestion.\n3. If accepted, one of 30 supported specialties is shown with a doctors link.\n4. You can always pick a specialty manually.\nIt is not a diagnosis. This chat does not send symptoms to that service.",
+      "questions": ["what does the specialty helper do", "feature 01", "how to use specialty assist", "which specialty is right for me"],
+      "followups": ["What is the difference between 56 and 30?", "What can this chat do?"]
+    },
+    {
+      "id": "ai.board.ar",
+      "title": "لوحة ميزات الذكاء الاصطناعي",
+      "source": "patient/ai-features.php / admin/ai-features.php",
+      "source_label": "ميزات الذكاء الاصطناعي",
+      "roles": ["p", "a", "guest", "d"],
+      "lang": "ar",
+      "text": "لوحة الميزات في eDoc تعرض خمساً:\n- توصية التخصص: منفّذة تجريبياً.\n- تقدير وقت الانتظار: قيد التطوير، بلا نتائج نموذج.\n- فرز الاستعجال: قيد التطوير.\n- تحليل الملاحظات: قيد التطوير.\n- احتمال عدم الحضور: قيد التطوير.\nمساعد الدردشة الذي تقرأه الآن أداة لشرح الاستخدام وليس بطاقة تقدير الانتظار. لا تُعرض نتائج للنماذج غير المنفّذة.",
+      "questions": ["ما الميزات الخمس", "هل تقدير الانتظار يعمل", "ما الميزات المتاحة حالياً", "ما الميزات قيد التطوير", "feature 02", "feature 03", "كيف أستخدم ميزات الذكاء الاصطناعي"],
+      "followups": ["كيف أستخدم مساعد التخصص؟"]
+    },
+    {
+      "id": "ai.board.en",
+      "title": "AI features board",
+      "source": "patient/ai-features.php / admin/ai-features.php",
+      "source_label": "AI features",
+      "roles": ["p", "a", "guest", "d"],
+      "lang": "en",
+      "text": "The board lists five items:\n- Specialty recommendation: live (experimental).\n- Queue time estimation: in development, no model output.\n- Urgency triage: in development.\n- Feedback sentiment: in development.\n- No-show prediction: in development.\nThis chat helper explains the product; it is not the queue-time card. Unbuilt features show no model results.",
+      "questions": ["five AI features", "does queue estimation work", "what AI is available", "features in development", "feature 02", "feature 03", "how to use AI features"],
+      "followups": ["How do I use the specialty helper?"]
+    }
+  ]
+}

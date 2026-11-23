@@ -1,0 +1,11 @@
+services:
+  edoc-assistant:
+    build: .
+    ports:
+      - "8082:8082"
+    environment:
+      PORT: "8082"
+      ASSISTANT_SERVICE_TOKEN: ${ASSISTANT_SERVICE_TOKEN:-local-assistant-token}
+      ASSISTANT_LLM_URL: ${ASSISTANT_LLM_URL:-}
+      ASSISTANT_LLM_TOKEN: ${ASSISTANT_LLM_TOKEN:-}
+      ASSISTANT_LLM_MODEL: ${ASSISTANT_LLM_MODEL:-}

@@ -1,7 +1,0 @@
-services:
-  specialty-recommend:
-    build: .
-    ports:
-      - "8081:10000"
-    environment:
-      PORT: "10000"

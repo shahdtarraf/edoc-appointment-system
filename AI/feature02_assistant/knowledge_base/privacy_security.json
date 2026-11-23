@@ -1,0 +1,26 @@
+{
+  "documents": [
+    {
+      "id": "priv.ar",
+      "title": "ما لا تشاركه في المحادثة",
+      "source": "patient/settings.php",
+      "source_label": "الإعدادات والخصوصية",
+      "roles": ["guest", "p", "d", "a"],
+      "lang": "ar",
+      "text": "لا تكتب كلمة المرور أو رموز الدخول أو بيانات مريض آخر في هذه الدردشة. المساعد لا يستطيع عرض كلمات المرور ولا سجلات حساب آخر. لتغيير بياناتك استخدم صفحة الإعدادات لحسابك فقط.",
+      "questions": ["ما البيانات التي يجب عدم مشاركتها", "هل يستطيع المساعد معرفة كلمة المرور", "هل يعرض بيانات مرضى آخرين", "كيف يتعامل مع المعلومات الحساسة"],
+      "followups": ["كيف أغيّر كلمة المرور؟"]
+    },
+    {
+      "id": "priv.en",
+      "title": "What not to share in chat",
+      "source": "patient/settings.php",
+      "source_label": "Settings and privacy",
+      "roles": ["guest", "p", "d", "a"],
+      "lang": "en",
+      "text": "Do not type passwords, tokens, or another person's records here. I cannot look up passwords or other accounts. Change your own details only from Settings.",
+      "questions": ["what should I not share", "can you see my password", "other patient data", "sensitive information"],
+      "followups": ["How do I change password?"]
+    }
+  ]
+}

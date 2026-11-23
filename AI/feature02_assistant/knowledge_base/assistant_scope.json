@@ -1,0 +1,70 @@
+{
+  "documents": [
+    {
+      "id": "assist.what.ar",
+      "title": "ماذا يستطيع مساعد الدردشة",
+      "source": "includes/assistant_widget.php",
+      "source_label": "المساعد",
+      "roles": ["guest", "p", "d", "a"],
+      "lang": "ar",
+      "text": "هذا المساعد يشرح استخدام منصة eDoc التجريبية: الحساب، التخصصات، الأطباء، الحجز المحاكى، ولوحات الأدوار. لا يحجز ولا يلغي ولا يعدّل بياناتك. لا يطلع على كلمة المرور أو سجلات مرضى آخرين. لست طبيباً ولا أقدم تشخيصاً.",
+      "questions": ["ماذا يستطيع المساعد", "شو بتقدر تعمل", "ما حدود المساعد", "هل تحجز لي"],
+      "followups": ["كيف أحجز جلسة؟", "ما الفرق بينك وبين مساعد التخصص؟"]
+    },
+    {
+      "id": "assist.what.en",
+      "title": "What this chat assistant can do",
+      "source": "includes/assistant_widget.php",
+      "source_label": "Help",
+      "roles": ["guest", "p", "d", "a"],
+      "lang": "en",
+      "text": "I explain how to use the eDoc Demo: accounts, specialties, doctors, simulated booking, and role consoles. I cannot book, cancel, or edit your record. I cannot see passwords or other patients. I am not a clinician.",
+      "questions": ["what can the assistant do", "can you book for me", "assistant limits"],
+      "followups": ["How do I book a session?", "How is this different from the specialty helper?"]
+    },
+    {
+      "id": "assist.vs.f01.ar",
+      "title": "الفرق بين الدردشة ومساعد التخصص",
+      "source": "patient/specialty-assist.php / includes/assistant_widget.php",
+      "source_label": "المساعد ومساعد التخصص",
+      "roles": ["guest", "p", "d", "a"],
+      "lang": "ar",
+      "text": "مساعد الدردشة يشرح استخدام الصفحات. مساعد اختيار التخصص صفحة منفصلة للمريض (الميزة الأولى) تأخذ وصفاً قصيراً وتقترح تخصصاً واحداً من 30 تخصصاً مدعوماً إن قَبل النموذج. الدردشة لا ترسل أعراضك إلى تلك الخدمة ولا تستبدلها.",
+      "questions": ["ما الفرق بينك وبين مساعد التخصص", "هل أنت الميزة الأولى", "feature 01 vs assistant"],
+      "followups": ["كيف أستخدم مساعد التخصص؟"]
+    },
+    {
+      "id": "assist.vs.f01.en",
+      "title": "Chat vs specialty helper",
+      "source": "patient/specialty-assist.php / includes/assistant_widget.php",
+      "source_label": "Help and specialty helper",
+      "roles": ["guest", "p", "d", "a"],
+      "lang": "en",
+      "text": "This chat explains the screens. The specialty helper is a separate patient page (Feature 01) that may suggest one of 30 supported specialties. Chat does not send your symptoms there and does not replace that page.",
+      "questions": ["difference between assistant and specialty helper", "are you feature 01"],
+      "followups": ["How do I use the specialty helper?"]
+    },
+    {
+      "id": "assist.ask.ar",
+      "title": "كيف أطرح سؤالاً واضحاً",
+      "source": "includes/assistant_widget.php",
+      "source_label": "المساعد",
+      "roles": ["guest", "p", "d", "a"],
+      "lang": "ar",
+      "text": "اسأل عن خطوة في المنصة: إنشاء حساب، دخول، تخصص، طبيب، حجز، حجوزاتي، إعدادات، أو لوحة دورك. إذا امتنعت فالمعلومة غير موجودة في صفحات المساعدة. أعد الصياغة أو افتح القائمة الجانبية.",
+      "questions": ["كيف أطرح سؤالاً واضحاً", "لماذا قد يمتنع عن الإجابة"],
+      "followups": []
+    },
+    {
+      "id": "assist.ask.en",
+      "title": "How to ask a clear question",
+      "source": "includes/assistant_widget.php",
+      "source_label": "Help",
+      "roles": ["guest", "p", "d", "a"],
+      "lang": "en",
+      "text": "Ask about a platform step: sign up, login, specialty, doctor, booking, My bookings, Settings, or your console. If I abstain, that fact is not in the help pages. Rephrase or use the sidebar.",
+      "questions": ["how should I ask", "why might you abstain"],
+      "followups": []
+    }
+  ]
+}

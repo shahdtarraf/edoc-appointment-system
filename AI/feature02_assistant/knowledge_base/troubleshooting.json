@@ -1,0 +1,114 @@
+{
+  "documents": [
+    {
+      "id": "tech.login.ar",
+      "title": "فشل تسجيل الدخول",
+      "source": "login.php",
+      "source_label": "تسجيل الدخول",
+      "roles": ["guest", "p", "d", "a"],
+      "lang": "ar",
+      "text": "إذا ظهرت رسالة بيانات الدخول غير صحيحة تحقق من البريد وكلمة المرور. لا يوجد في Demo رابط استعادة كلمة مرور. لا ترسل كلمة المرور في الدردشة. بعد نجاح الدخول تُفتح لوحة الدور: مريض أو طبيب أو إدارة.",
+      "questions": ["فشل تسجيل الدخول", "لا أستطيع الدخول", "wrong credentials", "نسيت كلمة المرور"],
+      "followups": ["كيف أسجل الدخول؟"]
+    },
+    {
+      "id": "tech.login.en",
+      "title": "Login failed",
+      "source": "login.php",
+      "source_label": "Log in",
+      "roles": ["guest", "p", "d", "a"],
+      "lang": "en",
+      "text": "If you see wrong credentials, check email and password. Demo has no password-reset link. Do not send the password in chat. A matching account opens the patient, doctor, or admin console.",
+      "questions": ["login failed", "cannot log in", "forgot password"],
+      "followups": ["How do I log in?"]
+    },
+    {
+      "id": "tech.signup.ar",
+      "title": "مشكلة إنشاء الحساب",
+      "source": "signup.php / create-account.php",
+      "source_label": "إنشاء حساب",
+      "roles": ["guest", "p"],
+      "lang": "ar",
+      "text": "إنشاء الحساب للمريض فقط عبر شاشتين. إذا ظهر أن البريد مستخدم مسبقاً جرّب بريداً آخر. إذا لم تتطابق كلمتا المرور أعد الإدخال. تحقق من الحقول المطلوبة: الاسم وتاريخ الميلاد والبريد.",
+      "questions": ["مشكلة إنشاء الحساب", "البريد مستخدم", "كلمتا المرور غير متطابقتين"],
+      "followups": ["كيف أنشئ حساباً؟"]
+    },
+    {
+      "id": "tech.signup.en",
+      "title": "Sign-up problems",
+      "source": "signup.php / create-account.php",
+      "source_label": "Sign up",
+      "roles": ["guest", "p"],
+      "lang": "en",
+      "text": "Only patients sign up, in two screens. If the email is already in use, try another. If passwords do not match, re-enter them. Required fields include name, date of birth, and email.",
+      "questions": ["sign up failed", "email already in use", "passwords do not match"],
+      "followups": ["How do I create an account?"]
+    },
+    {
+      "id": "tech.empty.ar",
+      "title": "لا يظهر أطباء أو جلسات",
+      "source": "patient/doctors.php / patient/schedule.php",
+      "source_label": "الأطباء والجلسات",
+      "roles": ["p", "guest"],
+      "lang": "ar",
+      "text": "إذا لم يظهر أطباء مطابقون امسح الفلاتر أو اختر تخصصاً آخر من الدليل. إذا لم توجد جلسات مطابقة قد لا توجد جلسات بتاريخ اليوم أو بعده لذلك الطبيب. الحجز يحتاج جلسة متاحة بسعة غير ممتلئة.",
+      "questions": ["عدم ظهور الأطباء", "لا توجد جلسات", "لم تظهر مواعيد", "ماذا أفعل إذا لم أجد طبيباً"],
+      "followups": ["كيف أجد طبيباً؟", "كيف أحجز جلسة؟"]
+    },
+    {
+      "id": "tech.empty.en",
+      "title": "No doctors or sessions listed",
+      "source": "patient/doctors.php / patient/schedule.php",
+      "source_label": "Doctors and sessions",
+      "roles": ["p", "guest"],
+      "lang": "en",
+      "text": "If no doctors match, clear filters or pick another specialty. If no sessions match, that doctor may have none from today onward. Booking needs an open session that is not full.",
+      "questions": ["no doctors shown", "no sessions", "no appointments listed"],
+      "followups": ["How do I find a doctor?", "How do I book a session?"]
+    },
+    {
+      "id": "tech.book.ar",
+      "title": "تعذر الحجز",
+      "source": "patient/booking-complete.php",
+      "source_label": "تأكيد الحجز التجريبي",
+      "roles": ["guest", "p"],
+      "lang": "ar",
+      "text": "إن امتلأت الجلسة أو فشل التحقق تُعاد إلى قائمة الجلسات دون إنشاء موعد. أكّد من صفحة الحجز بزر تأكيد الحجز التجريبي فقط. المساعد لا يحجز. لا توجد تذكرة دعم منفصلة في Demo؛ أعد المحاولة من الجلسات.",
+      "questions": ["فشل الحجز", "تعذر الحجز", "كيف أتواصل مع الدعم", "الدردشة لا تعمل"],
+      "followups": ["كيف أحجز جلسة؟"]
+    },
+    {
+      "id": "tech.book.en",
+      "title": "Booking did not complete",
+      "source": "patient/booking-complete.php",
+      "source_label": "Confirm simulated booking",
+      "roles": ["guest", "p"],
+      "lang": "en",
+      "text": "If the session is full or verification fails you return to Sessions and no ticket is created. Confirm only with Confirm simulated booking. This chat cannot book. Demo has no separate support ticket page.",
+      "questions": ["booking failed", "how do I contact support", "chat not loading"],
+      "followups": ["How do I book a session?"]
+    },
+    {
+      "id": "tech.assist.ar",
+      "title": "انقطاع المساعد أو البطء",
+      "source": "assistant-chat.php",
+      "source_label": "المساعد",
+      "roles": ["guest", "p", "d", "a"],
+      "lang": "ar",
+      "text": "إذا تعذّر تحميل الرد تظهر رسالة أن المساعد غير متاح. تسجيل الدخول والحجز يعملان من القوائم دون المساعد. على الهاتف استخدم القائمة الجانبية إن حجب الزر العائم جزءاً من الشاشة.",
+      "questions": ["انقطاع خدمة المساعد", "بطء الاستجابة", "مشاكل الهاتف", "عدم تحميل المحادثة"],
+      "followups": []
+    },
+    {
+      "id": "tech.assist.en",
+      "title": "Assistant unavailable or slow",
+      "source": "assistant-chat.php",
+      "source_label": "Help",
+      "roles": ["guest", "p", "d", "a"],
+      "lang": "en",
+      "text": "If a reply cannot load, you still can log in and book from the menus. On a phone, use the sidebar if the help button overlaps a control.",
+      "questions": ["chat not loading", "assistant down", "slow response", "mobile layout", "chat did not load"],
+      "followups": []
+    }
+  ]
+}

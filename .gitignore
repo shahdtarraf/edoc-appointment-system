@@ -40,6 +40,14 @@ ai/runs/
 # Full on-disk snapshot of ai/ (may include AHD binaries). Keep locally; do not push.
 ai_previous_backup/
 
-# Colab training workspace (raw/processed data and extra joblib copies). Inference copies live in services/specialty-recommend/artifacts/
-AI/
+# AI: do not ignore the whole tree. Source + F01 inference artifacts must be committable.
+# Training workspaces, venvs, Feature 03 joblib binaries, and secrets stay out of Git.
+AI/**/.venv/
+AI/**/__pycache__/
+AI/**/*.pyc
+AI/**/.ipynb_checkpoints/
+AI/.ipynb_checkpoints/
+AI/Features/
+AI/feature03_noshow/model_bundle/*.joblib
+_predeploy_backups/
 *.pdf
