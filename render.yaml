@@ -18,6 +18,7 @@
 services:
   - type: web
     name: edoc-web-staging
+    plan: free
     runtime: docker
     dockerfilePath: ./Dockerfile
     dockerContext: .
@@ -52,6 +53,7 @@ services:
 
   - type: web
     name: edoc-specialty-staging
+    plan: free
     runtime: docker
     dockerfilePath: ./AI/feature01_specialty/Dockerfile
     dockerContext: ./AI/feature01_specialty
@@ -64,6 +66,7 @@ services:
 
   - type: web
     name: edoc-assistant-staging
+    plan: free
     runtime: docker
     dockerfilePath: ./AI/feature02_assistant/Dockerfile
     dockerContext: ./AI/feature02_assistant
